@@ -7,6 +7,9 @@ extension Color {
     static let successGreen = Color("successGreenBase")
     static let surfaceBg = Color("surfaceBgBase")
     static let warmOrange = Color("warmOrangeBase")
+    static let borderBlock = Color("borderBlockBase")
+    static let orangeTint = Color("orangeTintBase")
+    static let orangeTintBorder = Color("orangeTintBorderBase")
     
     static let secondaryText = Color("secondaryTextBase")
     static let accentDescription = Color("accentDescriptionBase")

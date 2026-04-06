@@ -17,11 +17,16 @@ struct NavigationBarView: View {
         }
         .padding(.horizontal, 20)
         .foregroundStyle(Color.secondaryText)
-        .frame(maxWidth: .infinity, maxHeight: 80)
+        .frame(maxWidth: .infinity, maxHeight: 70)
         .background(Color.surfaceBg)
         .clipShape(Capsule())
-        .padding(.horizontal, 15)
-        .padding(.vertical, 10)
+        .padding(.horizontal, 35)
+        .overlay (
+            RoundedRectangle(cornerRadius: 200)
+                .stroke(LinearGradient(colors: [.accentOrange, .orangeTint, .accentOrange], startPoint: .leading, endPoint: .trailing), lineWidth: 2)
+                .padding(.horizontal, 35)
+        )
+//        .padding(.vertical, 10)
     }
 }
 
@@ -30,5 +35,5 @@ struct NavigationBarView: View {
         Spacer()
         NavigationBarView()
     }
-    .ignoresSafeArea()
+//    .ignoresSafeArea()
 }

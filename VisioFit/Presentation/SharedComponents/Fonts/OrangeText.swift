@@ -6,7 +6,7 @@ struct OrangeText: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundColor(Color.accentOrange)
-            .font(.system(size: fontSize, weight: .heavy))
+            .font(.system(size: fontSize, weight: .bold))
     }
 }
 

@@ -10,8 +10,9 @@ struct TabItem: View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 20, weight: .medium))
+                    .font(.system(size: 16, weight: .medium))
                 Text(name)
+                    .font(.system(size: 16))
             }
             .frame(maxWidth: .infinity)
             .foregroundStyle(isSelected ? Color.accentOrange : Color.secondaryText)

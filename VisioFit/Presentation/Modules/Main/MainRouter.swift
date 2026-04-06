@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainRouter: View {
-    @State private var appScreen: AppScreen = .main
+    @State private var appScreen: AppScreen = .account
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -20,7 +20,6 @@ struct MainRouter: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             NavigationBarView()
         }
-        .ignoresSafeArea()
         .background(Color.baseBg)
     }
 }

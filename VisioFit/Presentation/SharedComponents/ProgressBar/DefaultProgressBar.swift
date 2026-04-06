@@ -4,18 +4,19 @@ struct DefaultProgressBar: View {
     var actualValue: Double
     var maxValue: Double
     private var progress: Double {
-        actualValue / maxValue
+        guard maxValue > 0 else { return 0 }
+        return (actualValue / maxValue)
     }
     
     var body: some View {
         GeometryReader { proxy in
-            Rectangle()
-                .background(Color.baseBg)
-                .clipShape(Capsule())
+            Capsule()
+                .fill(Color.baseBg)
             
-            Rectangle()
-                .background(Color.baseBg)
-                .clipShape(Capsule())
+            Capsule()
+                .fill(Color.accentOrange)
+                .frame(width: proxy.size.width * CGFloat(progress))
+                .animation(.spring, value: progress)
         }
     }
 }
