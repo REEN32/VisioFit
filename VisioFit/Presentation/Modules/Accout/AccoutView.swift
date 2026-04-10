@@ -1,6 +1,11 @@
 import SwiftUI
 
 struct AccoutView: View {
+    @State private var activeParam: ActiveParam?
+    
+    @State private var height: Int = 172
+    @State private var weight: Double = 52.5
+    @State private var gender: String = "Мужской"
     
     var body: some View {
         NavigationStack {
@@ -112,15 +117,31 @@ struct AccoutView: View {
                                     .blockLabel()
                                 Spacer()
                             }
-                            ParametrRow(iconName: "arrow.up", name: "Рост", value: "172", valueType: "см")
+                            ParametrRow(iconName: "arrow.up", name: "Рост", value: String(height), valueType: "см") {
+                                activeParam = .height
+                            }
                                 .frame(minHeight: 60)
-                            ParametrRow(iconName: "scalemass.fill", name: "Вес", value: "70", valueType: "кг")
+                            ParametrRow(iconName: "scalemass.fill", name: "Вес", value: String(weight), valueType: "кг") {
+                                activeParam = .width
+                            }
                                 .frame(minHeight: 60)
-                            ParametrRow(iconName: "figure.stand.dress.line.vertical.figure", name: "Пол", value: "Мужской", valueType: "")
+                            ParametrRow(iconName: "figure.stand.dress.line.vertical.figure", name: "Пол", value: gender, valueType: "") {
+                                activeParam = .gender
+                            }
                                 .frame(minHeight: 60)
                             
                         }
                         .padding(15)
+                        .sheet(item: $activeParam) { param in
+                            switch param {
+                            case .height:
+                                HeightView(height: $height)
+                            case .width:
+                                WeightView(weight: $weight)
+                            case .gender:
+                                SexView(gender: $gender)
+                            }
+                        }
                         
                         VStack(alignment: .leading, spacing: 15) {
                             HStack {
@@ -161,6 +182,13 @@ struct AccoutView: View {
             }
         }
     }
+}
+
+private enum ActiveParam: Identifiable {
+    var id: Int { self.hashValue }
+    case height
+    case width
+    case gender
 }
 
 #Preview {

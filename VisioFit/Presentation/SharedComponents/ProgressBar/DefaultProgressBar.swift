@@ -5,6 +5,7 @@ struct DefaultProgressBar: View {
     var maxValue: Double
     private var progress: Double {
         guard maxValue > 0 else { return 0 }
+        guard actualValue / maxValue < 1 else { return 1 }
         return (actualValue / maxValue)
     }
     
@@ -14,7 +15,7 @@ struct DefaultProgressBar: View {
                 .fill(Color.baseBg)
             
             Capsule()
-                .fill(Color.accentOrange)
+                .fill(progress == 1 ? Color.successGreen : Color.accentOrange)
                 .frame(width: proxy.size.width * CGFloat(progress))
                 .animation(.spring, value: progress)
         }

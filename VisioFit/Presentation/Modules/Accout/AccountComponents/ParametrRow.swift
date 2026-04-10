@@ -5,10 +5,11 @@ struct ParametrRow: View {
     let name: String
     let value: String
     let valueType: String
+    let action: () -> Void
     
     var body: some View {
         Button {
-            print("ParametrRow: флешечка")
+            action()
         } label: {
             HStack {
                 HStack {
@@ -53,22 +54,4 @@ struct ParametrRow: View {
             .mainBlock()
         }
     }
-}
-
-#Preview {
-    VStack(alignment: .leading, spacing: 15) {
-        HStack {
-            Text("Парметры")
-                .blockLabel()
-            Spacer()
-        }
-        ParametrRow(iconName: "arrow.up", name: "Рост", value: "172", valueType: "см")
-            .frame(minHeight: 60)
-        ParametrRow(iconName: "scalemass.fill", name: "Вес", value: "70", valueType: "кг")
-            .frame(minHeight: 60)
-        ParametrRow(iconName: "figure.stand.dress.line.vertical.figure", name: "Пол", value: "Мужской", valueType: "")
-            .frame(minHeight: 60)
-        
-    }
-    .padding(15)
 }

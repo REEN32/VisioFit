@@ -1,18 +1,18 @@
 import SwiftUI
 
 struct NavigationBarView: View {
-    @State private var selectedTab: Int = 2
+    @Binding var selectedScreen: AppScreen
     
     var body: some View {
         HStack {
-            TabItem(icon: "chart.bar.fill", name: "Статистика", isSelected: selectedTab == 1) {
-                selectedTab = 1
+            TabItem(icon: "chart.bar.fill", name: "Статистика", isSelected: selectedScreen == .statistics) {
+                selectedScreen = .statistics
             }
-            TabItem(icon: "house.fill", name: "Главная", isSelected: selectedTab == 2) {
-                selectedTab = 2
+            TabItem(icon: "house.fill", name: "Главная", isSelected: selectedScreen == .main) {
+                selectedScreen = .main
             }
-            TabItem(icon: "person.fill", name: "Профиль", isSelected: selectedTab == 3) {
-                selectedTab = 3
+            TabItem(icon: "person.fill", name: "Профиль", isSelected: selectedScreen == .account) {
+                selectedScreen = .account
             }
         }
         .padding(.horizontal, 20)
@@ -29,11 +29,11 @@ struct NavigationBarView: View {
 //        .padding(.vertical, 10)
     }
 }
-
-#Preview {
-    VStack {
-        Spacer()
-        NavigationBarView()
-    }
+//
+//#Preview {
+//    VStack {
+//        Spacer()
+//        NavigationBarView()
+//    }
 //    .ignoresSafeArea()
-}
+//}
