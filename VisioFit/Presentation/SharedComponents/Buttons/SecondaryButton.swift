@@ -23,6 +23,7 @@ struct SecondaryButton: View {
                 .secondaryButtonText(selected: selected, fontSize: fontSize, weight: weight)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contentShape(Capsule())
+                .padding(10)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(

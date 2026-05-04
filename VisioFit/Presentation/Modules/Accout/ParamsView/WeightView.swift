@@ -37,3 +37,7 @@ struct WeightView: View {
         }
     }
 }
+
+#Preview {
+    WeightView(weight: .constant(70))
+}

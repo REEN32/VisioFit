@@ -1,26 +1,26 @@
 import SwiftUI
 
-struct ExerciseRow: View {
-    let name: String
+struct HistoryRow: View {
+    let date: String
     let desctiptionRepetitions: Int
     let isTimeCounting: Bool
-    let descriptionTraining: Int
+    let time: String
     let percent: Int
     
-    init(name: String, desctiptionRepetitions: Int, isTimeCounting: Bool = false, descriptionTraining: Int, percent: Int) {
-        self.name = name
+    init(date: String, desctiptionRepetitions: Int, isTimeCounting: Bool = false, time: String, percent: Int) {
+        self.date = date
         self.desctiptionRepetitions = desctiptionRepetitions
         self.isTimeCounting = isTimeCounting
-        self.descriptionTraining = descriptionTraining
+        self.time = time
         self.percent = percent
     }
     
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(name)
+                Text(date)
                     .headText(fontSize: 20, weight: .bold)
-                Text("\(desctiptionRepetitions) \(isTimeCounting ? "мин" : "повторений") • \(descriptionTraining) сессий")
+                Text("\(desctiptionRepetitions) \(isTimeCounting ? "мин" : "повторений") • \(time) мин")
                     .accentDescription(fontSize: 16)
             }
             Spacer()
@@ -36,7 +36,6 @@ struct ExerciseRow: View {
     }
 }
 
-//#Preview {
-//    ExerciseRow(name: "Отжимания", desctiptionRepetitions: 543, descriptionTraining: 23, percent: 84) {
-//    }
-//}
+#Preview {
+    HistoryRow(date: "27 ноя, Пн • 14:00", desctiptionRepetitions: 53, time: "4:32", percent: 84)
+}

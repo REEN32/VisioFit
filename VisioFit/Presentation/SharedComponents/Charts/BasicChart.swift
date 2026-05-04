@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct BasicChart: View {
-    let data: [Int]
+    let data: [Double]
     
     private var multiplyIndex: [Double] {
         let maxValue = data.max() ?? 1
@@ -13,20 +13,26 @@ struct BasicChart: View {
         GeometryReader { proxy in
             HStack(alignment: .bottom) {
                 ForEach (0..<data.count, id:\.self) { i in
-                    VStack {
+                    VStack(spacing: 2) {
                         Spacer()
-                    Rectangle()
+                        Text(data[i].formatted())
+                            .accentDescription(fontSize: 13)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                        
+                        Rectangle()
                             .foregroundColor(
                                 .accentOrange
-                                    .opacity(max(multiplyIndex[i] * 1.5, 0.4))
+                                    .opacity(max(multiplyIndex[i] * 1.3, 0.4))
                             )
                         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 10, topTrailingRadius: 10))
-                        .frame(maxHeight: proxy.size.height * multiplyIndex[i])
+                        .frame(maxHeight: (proxy.size.height - 30) * multiplyIndex[i])
                     }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .aspectRatio(3, contentMode: .fit)
     }
 }
 

@@ -34,17 +34,22 @@ struct AccoutView: View {
                                         .accentDescription(fontSize: 20)
                                 }
                             }
-                            VStack(spacing: 4) {
-                                HStack {
-                                    Text("XP: 3 240/4 000")
-                                        .accentDescription(fontSize: 15)
-                                    Spacer()
-                                    Text("67%")
-                                        .orangeText(fontSize: 15)
+                            NavigationLink {
+                                LevelView()
+                            } label: {
+                                VStack(spacing: 4) {
+                                    HStack {
+                                        Text("XP: 3 240/4 000")
+                                            .accentDescription(fontSize: 15)
+                                        Spacer()
+                                        Text("67%")
+                                            .orangeText(fontSize: 15)
+                                    }
+                                    DefaultProgressBar(actualValue: 52, maxValue: 100)
+                                        .frame(maxWidth: .infinity, maxHeight: 12)
                                 }
-                                DefaultProgressBar(actualValue: 52, maxValue: 100)
-                                    .frame(maxWidth: .infinity, maxHeight: 12)
                             }
+
                         }
                         Spacer()
                     }
@@ -155,13 +160,13 @@ struct AccoutView: View {
                             VStack(spacing: 15) {
                                 Group {
                                     HStack(spacing: 15) {
-                                        AchivmentBlock(icon: "star.fill", mainText: "Соснул хуйца", descriptionText: "15 раз")
+                                        AchivmentBlock(icon: "star.fill", mainText: "Отжался", descriptionText: "15 раз")
                                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        AchivmentBlock(icon: "star.fill", mainText: "Соснул хуйца", descriptionText: "15 раз")
+                                        AchivmentBlock(icon: "star.fill", mainText: "Отжался", descriptionText: "15 раз")
                                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                                     }
                                     HStack(spacing: 15) {
-                                        AchivmentBlock(icon: "star.fill", mainText: "Соснул хуйца", descriptionText: "15 раз")
+                                        AchivmentBlock(icon: "star.fill", mainText: "Отжался", descriptionText: "15 раз")
                                             .frame(maxWidth: .infinity)
                                         NavigationLink(destination: AchivmentView()) {
                                             AchivmentBlock(icon: "arrow.right", mainText: "", descriptionText: "Больше...", grayStyle: true)

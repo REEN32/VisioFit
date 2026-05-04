@@ -13,6 +13,8 @@ extension Color {
     static let greenTint = Color("greenTintBase")
     static let greenTintBorder = Color("greenTintBorderBase")
     static let badRed = Color("badRedBase")
+    static let redTint = Color("redTintBase")
+    static let redTintBorder = Color("redTintBorderBase")
     
     static let secondaryText = Color("secondaryTextBase")
     static let accentDescription = Color("accentDescriptionBase")

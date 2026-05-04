@@ -1,20 +1,20 @@
 import SwiftUI
 
-struct GreenTintBlock: ViewModifier {
+struct RedTintBlock: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .background(Color.greenTint)
+            .background(Color.redTint)
             .clipShape(.rect(cornerRadius: 25))
             .overlay(
                 RoundedRectangle(cornerRadius: 25)
-                    .stroke(Color.greenTintBorder, lineWidth: 3)
+                    .stroke(Color.redTintBorder, lineWidth: 3)
             )
     }
 }
 
 extension View {
-    func greenTintBlock() -> some View {
-        modifier(GreenTintBlock())
+    func redTintBlock() -> some View {
+        modifier(RedTintBlock())
     }
 }

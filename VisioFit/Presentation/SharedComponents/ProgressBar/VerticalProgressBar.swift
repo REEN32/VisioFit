@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DefaultProgressBar: View {
+struct VerticalProgressBar: View {
     var percent: Double
     
     init(actualValue: Double, maxValue: Double) {
@@ -15,13 +15,16 @@ struct DefaultProgressBar: View {
     
     var body: some View {
         GeometryReader { proxy in
-            Capsule()
-                .fill(Color.baseBg)
             
-            Capsule()
-                .fill(percent == 1 ? Color.successGreen : Color.accentOrange)
-                .frame(width: proxy.size.width * CGFloat(percent))
-                .animation(.spring, value: percent)
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill(Color.surfaceBg)
+                
+                Capsule()
+                    .fill(percent == 1 ? Color.successGreen : Color.accentOrange)
+                    .frame(height: proxy.size.height * CGFloat(percent))
+                    .animation(.spring, value: percent)
+            }
         }
     }
 }

@@ -34,6 +34,6 @@ struct SexView: View {
     }
 }
 
-//#Preview {
-//    SexView(sex: .constant("хуй"))
-//}
+#Preview {
+    SexView(gender: .constant("Женский"))
+}

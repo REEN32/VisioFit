@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainRouter: View {
-    @State private var appScreen: AppScreen = .statistics
+    @State private var appScreen: AppScreen = .main
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -10,7 +10,7 @@ struct MainRouter: View {
                 case .account:
                     AccoutView()
                 case .main:
-                    EmptyView()
+                    MainView()
                 case .statistics:
                     StatisticsView()
                 }

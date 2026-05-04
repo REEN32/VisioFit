@@ -15,16 +15,7 @@ struct ParametrRow: View {
                 HStack {
                     VStack(alignment: .leading) {
                         HStack(spacing: 20) {
-                            VStack {
-                                Image(systemName: iconName)
-                                    .font(.system(size: 20, weight: .heavy))
-                                    .foregroundStyle(Color.accentOrange)
-                            }
-                            .frame(maxWidth: 40, maxHeight: 40)
-                            .background(
-                                RoundedRectangle(cornerRadius: 15)
-                                    .foregroundStyle(Color.orangeTint)
-                            )
+                            DefaultIcon(iconName: iconName, maxWidth: 40, maxHeight: 40)
                             VStack(alignment: .leading) {
                                 Text(name)
                                     .headText(fontSize: 20, weight: .bold)

@@ -1,11 +1,18 @@
 import SwiftUI
 
-struct DefaultProgressBar: View {
+struct AccuracyBar: View {
     var percent: Double
-    
-    init(actualValue: Double, maxValue: Double) {
-        let progress = actualValue / maxValue
-        self.percent = min(max(0, progress), 1)
+    private var color: Color {
+        switch percent {
+        case 0.0..<0.6:
+            return Color.badRed
+        case 0.6..<0.85:
+            return Color.warmOrange
+        case 0.85...1:
+            return Color.successGreen
+        default:
+            return Color.white
+        }
     }
     
     init(percent: Double) {
@@ -19,7 +26,7 @@ struct DefaultProgressBar: View {
                 .fill(Color.baseBg)
             
             Capsule()
-                .fill(percent == 1 ? Color.successGreen : Color.accentOrange)
+                .fill(color)
                 .frame(width: proxy.size.width * CGFloat(percent))
                 .animation(.spring, value: percent)
         }
