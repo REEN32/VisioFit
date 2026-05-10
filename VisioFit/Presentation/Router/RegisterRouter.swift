@@ -1,8 +1,21 @@
-//
-//  RegisterRouter.swift
-//  VisioFit
-//
-//  Created by Герман Василевич on 7.05.26.
-//
+import SwiftUI
+import Combine
 
-import Foundation
+class RegisterRouter: ObservableObject {
+    @Published var navPath = NavigationPath()
+    
+    var startingSrceen: RegisterScreen = .main
+    
+    func push(to route: RegisterScreen) {
+        navPath.append(route)
+    }
+    
+    func pop() {
+        guard !navPath.isEmpty else { return }
+        navPath.removeLast()
+    }
+    
+    func popToRoot() {
+        navPath.removeLast(navPath.count)
+    }
+}
