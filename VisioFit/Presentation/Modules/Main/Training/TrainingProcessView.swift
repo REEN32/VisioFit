@@ -63,7 +63,7 @@ struct TrainingProcessView: View {
                         .padding(15)
                         .mainBlock()
                         
-                        DefaulButton(label: "Закончить подход") {
+                        DefaultButton(label: "Закончить подход") {
                             trainingScreen = .rest
                         }
                     }

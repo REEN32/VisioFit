@@ -33,7 +33,7 @@ struct DefaultButton: View {
 #Preview {
     ZStack {
         Color.baseBg.ignoresSafeArea()
-        DefaulButton(label: "Сохранить", action: {})
+        DefaultButton(label: "Сохранить", action: {})
             .frame(maxWidth: 200, maxHeight: 90)
     }
 }

@@ -26,7 +26,7 @@ struct SexView: View {
                 }
                 .pickerStyle(.wheel)
                 
-                DefaulButton(label: "Сохранить") { dismiss() }
+                DefaultButton(label: "Сохранить") { dismiss() }
                     .frame(maxWidth: 200, maxHeight: 80)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

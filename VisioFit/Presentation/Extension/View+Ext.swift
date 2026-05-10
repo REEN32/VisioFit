@@ -1,8 +1,7 @@
-//
-//  View+Ext.swift
-//  VisioFit
-//
-//  Created by Герман Василевич on 7.05.26.
-//
+import SwiftUI
 
-import Foundation
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}

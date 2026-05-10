@@ -1,8 +1,5 @@
-//
-//  RegisterScreen.swift
-//  VisioFit
-//
-//  Created by Герман Василевич on 7.05.26.
-//
-
-import Foundation
+enum RegisterScreen {
+    case main
+    case firstInput
+    case secondInput
+}

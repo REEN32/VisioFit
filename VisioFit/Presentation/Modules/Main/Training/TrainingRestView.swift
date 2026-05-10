@@ -43,10 +43,10 @@ struct TrainingRestView: View {
                     Spacer()
                     
                     HStack(spacing: 15) {
-                        DefaulButton(label: "Добавить вермя") {
+                        DefaultButton(label: "Добавить вермя") {
                             showWindow = true
                         }
-                        DefaulButton(label: "Следующий подход") {
+                        DefaultButton(label: "Следующий подход") {
                             trainingScreen = .complete
                         }
                     }
@@ -83,7 +83,7 @@ struct TrainingRestView: View {
                 }
                 .padding(.horizontal, 20)
                 .pickerStyle(.wheel)
-                DefaulButton(label: "Сохранить") {
+                DefaultButton(label: "Сохранить") {
                     showWindow = false
                 }
                 .frame(maxHeight: proxy.size.height * 0.2)

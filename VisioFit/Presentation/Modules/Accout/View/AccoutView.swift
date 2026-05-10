@@ -1,6 +1,9 @@
 import SwiftUI
+import CoreData
 
 struct AccoutView: View {
+    @FetchRequest
+    
     @State private var activeParam: ActiveParam?
     
     @State private var height: Int = 172

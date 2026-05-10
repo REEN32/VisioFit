@@ -36,6 +36,7 @@ struct MainView: View {
                         
                         Button {
                             chartType = .kkal
+                            CoreDataManager.shared.deleteUser() // !!!!!!!!!
                         } label: {
                             VStack(alignment: .leading, spacing: 0) {
                                 HStack {

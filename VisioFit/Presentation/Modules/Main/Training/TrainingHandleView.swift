@@ -86,7 +86,7 @@ struct TrainingHandleView: View {
                     .padding(.bottom, 15)
                     
                     VStack(spacing: 15) {
-                        DefaulButton(label: "Закончить подход") {
+                        DefaultButton(label: "Закончить подход") {
                             trainingScreen = .rest
                         }
                     }
