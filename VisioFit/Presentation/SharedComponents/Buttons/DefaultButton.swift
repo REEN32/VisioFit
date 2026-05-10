@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DefaulButton: View {
+struct DefaultButton: View {
     let label: String
     let fontSize: CGFloat
     let weight: Font.Weight
