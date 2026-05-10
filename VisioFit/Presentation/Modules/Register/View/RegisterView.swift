@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RegisterView : View {
     @EnvironmentObject var router: RegisterRouter
+    @EnvironmentObject var vm: RegisterViewModel
     
     @State private var showPayment: Bool = false
     
@@ -37,6 +38,7 @@ struct RegisterView : View {
                         Text("или")
                             .accentDescription(fontSize: 20)
                         DefaultButton(label: "Начать бесплатно") {
+                            vm.isPaid = false
                             router.push(to: .firstInput)
                         }
                         .frame(maxHeight: proxy.size.height * 0.08)
@@ -74,6 +76,7 @@ struct RegisterView : View {
                 }
                 SecondaryButton(label: "Оплатить", fontSize: 20, weight: .bold, selected: true) {
                     showPayment = false
+                    vm.isPaid = true
                     router.push(to: .firstInput)
                 }
                 .frame(maxHeight: proxy.size.height * 0.1)
