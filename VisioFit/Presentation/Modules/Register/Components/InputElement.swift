@@ -35,7 +35,10 @@ struct InputElement: View {
                         if let value = Int(filtered) {
                             if value > self.range.upperBound {
                                 self.textInput = "\(self.range.upperBound)"
-                            } else {
+                            } else if value < self.range.lowerBound {
+                                self.textInput = "\(self.range.lowerBound)"
+                            }
+                            else {
                                 self.textInput = "\(value)"
                             }
                         } else {

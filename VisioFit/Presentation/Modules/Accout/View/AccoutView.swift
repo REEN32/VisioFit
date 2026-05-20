@@ -2,13 +2,33 @@ import SwiftUI
 import CoreData
 
 struct AccoutView: View {
-    @FetchRequest
+    @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
+    
+    var body: some View {
+        if let user = users.first {
+            AccoutContentView(user: user)
+        } else {
+            VStack {
+                Text("Ошибка загрузки")
+                    .headText()
+            }
+        }
+    }
+}
+
+private enum ActiveParam: Identifiable {
+    var id: Int { self.hashValue }
+    case height
+    case width
+    case gender
+}
+
+struct AccoutContentView: View {
+    @ObservedObject var user: User
+    
+    @Environment(\.managedObjectContext) private var context
     
     @State private var activeParam: ActiveParam?
-    
-    @State private var height: Int = 172
-    @State private var weight: Double = 52.5
-    @State private var gender: String = "Мужской"
     
     var body: some View {
         NavigationStack {
@@ -22,10 +42,10 @@ struct AccoutView: View {
                             .padding(20)
                         VStack(alignment: .leading, spacing: 10) {
                             VStack(alignment: .leading, spacing: 3) {
-                                Text("Василевич Г.")
+                                Text(user.formattedName)
                                     .headText()
                                 HStack {
-                                    Text("Ур. 8")
+                                    Text("Ур. \(user.level)")
                                         .padding(.vertical, 3)
                                         .padding(.horizontal, 15)
                                         .orangeText(fontSize: 16)
@@ -33,7 +53,7 @@ struct AccoutView: View {
                                             RoundedRectangle(cornerRadius: 20)
                                                 .foregroundStyle(Color.accentOrange.opacity(0.3))
                                         )
-                                    Text("Атлет")
+                                    Text(user.sportTitle)
                                         .accentDescription(fontSize: 20)
                                 }
                             }
@@ -42,16 +62,17 @@ struct AccoutView: View {
                             } label: {
                                 VStack(spacing: 4) {
                                     HStack {
-                                        Text("XP: 3 240/4 000")
+                                        Text(user.formattedXP)
                                             .accentDescription(fontSize: 15)
                                         Spacer()
-                                        Text("67%")
+                                        Text("\(user.xpPercent)%")
                                             .orangeText(fontSize: 15)
                                     }
-                                    DefaultProgressBar(actualValue: 52, maxValue: 100)
+                                    DefaultProgressBar(actualValue: Double(user.xp), maxValue: Double(user.nextXp))
                                         .frame(maxWidth: .infinity, maxHeight: 12)
                                 }
                             }
+                            .padding(.trailing, 10)
 
                         }
                         Spacer()
@@ -98,13 +119,13 @@ struct AccoutView: View {
                                             .foregroundStyle(Color.orangeTint)
                                     )
                                     VStack {
-                                        Text("14")
+                                        Text("\(user.streak)")
                                             .orangeText(fontSize: 32)
                                         Text("Дней подряд")
                                             .accentDescription(fontSize: 14)
                                     }
                                     VStack {
-                                        Text("52")
+                                        Text("\(user.maxStreak)")
                                             .font(.system(size: 32, weight: .bold))
                                             .descriptionStyle()
                                         Text("Лучшая серия")
@@ -125,15 +146,15 @@ struct AccoutView: View {
                                     .blockLabel()
                                 Spacer()
                             }
-                            ParametrRow(iconName: "arrow.up", name: "Рост", value: String(height), valueType: "см") {
+                            ParametrRow(iconName: "arrow.up", name: "Рост", value: String(user.height), valueType: "см") {
                                 activeParam = .height
                             }
                                 .frame(minHeight: 60)
-                            ParametrRow(iconName: "scalemass.fill", name: "Вес", value: String(weight), valueType: "кг") {
+                            ParametrRow(iconName: "scalemass.fill", name: "Вес", value: String(user.weight), valueType: "кг") {
                                 activeParam = .width
                             }
                                 .frame(minHeight: 60)
-                            ParametrRow(iconName: "figure.stand.dress.line.vertical.figure", name: "Пол", value: gender, valueType: "") {
+                            ParametrRow(iconName: "figure.stand.dress.line.vertical.figure", name: "Пол", value: user.wrappedGender, valueType: "") {
                                 activeParam = .gender
                             }
                                 .frame(minHeight: 60)
@@ -143,11 +164,11 @@ struct AccoutView: View {
                         .sheet(item: $activeParam) { param in
                             switch param {
                             case .height:
-                                HeightView(height: $height)
+                                HeightView(user: user)
                             case .width:
-                                WeightView(weight: $weight)
+                                WeightView(user: user)
                             case .gender:
-                                SexView(gender: $gender)
+                                SexView(user: user)
                             }
                         }
                         
@@ -190,15 +211,4 @@ struct AccoutView: View {
             }
         }
     }
-}
-
-private enum ActiveParam: Identifiable {
-    var id: Int { self.hashValue }
-    case height
-    case width
-    case gender
-}
-
-#Preview {
-    AccoutView()
 }

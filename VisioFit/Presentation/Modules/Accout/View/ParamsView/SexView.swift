@@ -1,9 +1,17 @@
 import SwiftUI
 
 struct SexView: View {
-    @Binding var gender: String
-    
     @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) var context
+    
+    @ObservedObject var user: User
+    
+    @State var gender: String
+    
+    init(user: User) {
+        self.user = user
+        self._gender = State(initialValue: user.wrappedGender)
+    }
     
     var body: some View {
         ZStack {
@@ -26,14 +34,18 @@ struct SexView: View {
                 }
                 .pickerStyle(.wheel)
                 
-                DefaultButton(label: "Сохранить") { dismiss() }
+                DefaultButton(label: "Сохранить") {
+                    user.gender = self.gender
+                    CoreDataManager.shared.save()
+                    dismiss()
+                }
                     .frame(maxWidth: 200, maxHeight: 80)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
-
-#Preview {
-    SexView(gender: .constant("Женский"))
-}
+//
+//#Preview {
+//    SexView(gender: .constant("Женский"))
+//}

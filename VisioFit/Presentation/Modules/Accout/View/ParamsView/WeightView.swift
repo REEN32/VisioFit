@@ -1,16 +1,20 @@
 import SwiftUI
 
 struct WeightView: View {
-    @Binding var weight: Double
-    
     @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) var context
     
-    private var range: [Double] = Array(stride(from: 30, through: 200, by: 0.5))
+    @ObservedObject var user: User
     
-    init(weight: Binding<Double>) {
-        self._weight = weight
+    @State var weight: Double
+    
+    private var range: [Double] = Array(stride(from: 1, through: 300, by: 0.5))
+    
+    init(user: User) {
+        self.user = user
+        self._weight = State(initialValue: user.weight)
     }
-    
+
     var body: some View {
         ZStack {
             Color.baseBg
@@ -30,14 +34,18 @@ struct WeightView: View {
                 }
                 .pickerStyle(.wheel)
                 
-                DefaultButton(label: "Сохранить") { dismiss() }
+                DefaultButton(label: "Сохранить") {
+                    user.weight = self.weight
+                    CoreDataManager.shared.save()
+                    dismiss()
+                }
                     .frame(maxWidth: 200, maxHeight: 80)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
-
-#Preview {
-    WeightView(weight: .constant(70))
-}
+//
+//#Preview {
+//    WeightView(weight: .constant(70))
+//}

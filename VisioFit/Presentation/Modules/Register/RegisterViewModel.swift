@@ -21,7 +21,7 @@ class RegisterViewModel: ObservableObject {
             user.height = Int16(self.height) ?? 0
             user.isPaid = self.isPaid
             user.weight = Double(self.weight) ?? 0.0
-            user.xp = 0
+            user.xp = 125
             user.streak = 0
             user.maxStreak = 0
         }

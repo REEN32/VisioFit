@@ -24,8 +24,8 @@ struct RegisterSecondInputView: View {
                     Spacer()
                     VStack(spacing: 00) {
                         VStack(alignment: .leading, spacing: 20) {
-                            InputElement(name: "Рост", descriptionText: "Введите ваш рост", isNumberic: true, range: 30...250, textInput: $vm.height)
-                            InputElement(name: "Вес", descriptionText: "Введите ваш вес", keyboardType: .numberPad, isNumberic: true, range: 1...300, textInput: $vm.weight)
+                            InputElement(name: "Рост", descriptionText: "Введите ваш рост", keyboardType: .numberPad, isNumberic: true, range: 1...250, textInput: $vm.height)
+                            InputElement(name: "Вес", descriptionText: "Введите ваш вес", keyboardType: .decimalPad, isNumberic: true, range: 1...300, textInput: $vm.weight)
                         }
                     }
                     Spacer()

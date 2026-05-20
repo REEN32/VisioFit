@@ -1,9 +1,17 @@
 import SwiftUI
 
 struct HeightView: View {
-    @Binding var height: Int
-    
     @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) var context
+    
+    @ObservedObject var user: User
+    
+    @State var height: Int
+    
+    init(user: User) {
+        self.user = user
+        self._height = State(initialValue: Int(user.height))
+    }
     
     var body: some View {
         ZStack {
@@ -15,7 +23,7 @@ struct HeightView: View {
                     .headText(weight: .bold)
                 HStack {
                     Picker("", selection: $height) {
-                        ForEach(80...220, id: \.self) {
+                        ForEach(1...250, id: \.self) {
                             Text("\($0)")
                                 .headText(fontSize: 24, weight: .bold)
                         }
@@ -24,14 +32,14 @@ struct HeightView: View {
                 }
                 .pickerStyle(.wheel)
                 
-                DefaultButton(label: "Сохранить") { dismiss() }
+                DefaultButton(label: "Сохранить") {
+                    user.height = Int16(height)
+                    CoreDataManager.shared.save()
+                    dismiss()
+                }
                     .frame(maxWidth: 200, maxHeight: 80)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
-}
-
-#Preview {
-    HeightView(height: .constant(100))
 }
