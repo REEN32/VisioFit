@@ -5,6 +5,7 @@ struct TrainingHandleView: View {
     @State private var countString: String = "0"
     
     @Binding var trainingScreen: TrainingScreen
+    @EnvironmentObject private var trainingViewModel: TrainingViewModel
     
     var body: some View {
         ZStack(alignment: .topLeading) {

@@ -2,8 +2,11 @@ import SwiftUI
 
 struct TrainingRestView: View {
     @State private var showWindow: Bool = false
+    @State private var selectedMinutesIndex: Int = 0
     
     @Binding var trainingScreen: TrainingScreen
+    
+    @EnvironmentObject private var trainingViewModel: TrainingViewModel
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -18,7 +21,7 @@ struct TrainingRestView: View {
                                     .headText(fontSize: 24, weight: .bold)
                                 Text("Планка")
                                     .headText(fontSize: 36)
-                                Text("00:18:42")
+                                Text(trainingViewModel.timeString)
                                     .headText(fontSize: 56)
                                 Text("время тренировки")
                                     .headText(fontSize: 20, weight: .medium)
@@ -35,8 +38,9 @@ struct TrainingRestView: View {
                             .textCase(.uppercase)
                             .headText()
                         
-                        Text("03:00")
+                        Text(trainingViewModel.restTimeString)
                             .headText(fontSize: 80)
+                            .monospacedDigit()
                     }
                     .padding(.top, 20)
                     
@@ -47,6 +51,7 @@ struct TrainingRestView: View {
                             showWindow = true
                         }
                         DefaultButton(label: "Следующий подход") {
+                            trainingViewModel.stopRestTimer()
                             trainingScreen = .complete
                         }
                     }
@@ -63,18 +68,29 @@ struct TrainingRestView: View {
                 }
             }
         }
+        .onAppear {
+            trainingViewModel.startRestTimer()
+        }
+        .onChange(of: trainingViewModel.restTime) { oldValue, newValue in
+            if newValue == 0 {
+                DispatchQueue.main.async {
+                    trainingViewModel.stopRestTimer()
+                    trainingScreen = .complete
+                }
+            }
+        }
     }
     
     @ViewBuilder
     private func timeWindow() -> some View {
-        let data: [Double] = [1, 2, 3, 4, 5,]
+        let data: [Double] = [0, 1, 2, 3, 4, 5,]
         GeometryReader { proxy in
             VStack {
                 Text("Выберите время")
                     .headText()
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)
-                Picker("", selection: .constant(15)) {
+                Picker("", selection: $selectedMinutesIndex) {
                     ForEach(0..<data.count, id: \.self) { time in
                         Text("\(time) мин")
                             .foregroundStyle(Color.white)
@@ -84,6 +100,7 @@ struct TrainingRestView: View {
                 .padding(.horizontal, 20)
                 .pickerStyle(.wheel)
                 DefaultButton(label: "Сохранить") {
+                    trainingViewModel.addRestTime(Int(data[selectedMinutesIndex] * 60))
                     showWindow = false
                 }
                 .frame(maxHeight: proxy.size.height * 0.2)

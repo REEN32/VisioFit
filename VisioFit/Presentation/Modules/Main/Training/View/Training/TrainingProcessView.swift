@@ -3,6 +3,15 @@ import SwiftUI
 struct TrainingProcessView: View {
     @Binding var trainingScreen: TrainingScreen
     
+    @ObservedObject private var cameraViewModel: CameraViewModel
+    
+    @EnvironmentObject private var trainingViewModel: TrainingViewModel
+    
+    init(trainingScreen: Binding<TrainingScreen>, cameraViewModel: CameraViewModel) {
+        self._trainingScreen = trainingScreen
+        self.cameraViewModel = cameraViewModel
+    }
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.baseBg.ignoresSafeArea()
@@ -18,23 +27,20 @@ struct TrainingProcessView: View {
                                 .headText(fontSize: 18)
                         }
                         HStack(alignment: .lastTextBaseline) {
-                            Text("12")
+                            Text("\(trainingViewModel.totalReps)")
                                 .headText(fontSize: 60)
                             Text("повторений")
                                 .headText(fontSize: 22, weight: .medium)
                         }
-                        RepeatCountLines(count: 9, target: 12)
+                        RepeatCountLines(count: trainingViewModel.totalReps, target: 12)
                     }
                     .padding(.horizontal, 15)
                     .padding(.bottom, 20)
                     .background(Color.accentOrange)
                     
-                    VStack {
-                        
-                    }
+                    CameraPreview(session: cameraViewModel.session)
                     .frame(maxWidth: .infinity)
                     .frame(height: proxy.size.height * 0.6)
-                    .background(Color.black)
                     .overlay(alignment: .bottom) {
                         HStack {
                             DefaultIcon(iconName: "info.circle", maxWidth: 40, maxHeight: 40)
@@ -55,15 +61,16 @@ struct TrainingProcessView: View {
                     
                     VStack(spacing: 15) {
                         VStack(spacing: 10) {
-                            Text("\(87)% точности")
-                                .accuracyText(value: 87)
-                            AccuracyBar(percent: 87)
+                            Text("\(trainingViewModel.currentAccuracy)% точности")
+                                .accuracyText(value: Double(trainingViewModel.currentAccuracy))
+                            AccuracyBar(percent: Double(trainingViewModel.currentAccuracy))
                                 .frame(height: 10)
                         }
                         .padding(15)
                         .mainBlock()
                         
                         DefaultButton(label: "Закончить подход") {
+                            self.trainingViewModel.stopTimer()
                             trainingScreen = .rest
                         }
                     }
@@ -74,9 +81,16 @@ struct TrainingProcessView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .onAppear {
+            cameraViewModel.start()
+            trainingViewModel.startTimer()
+        }
+        .onDisappear {
+            cameraViewModel.stop()
+        }
     }
 }
-
-#Preview {
-    TrainingProcessView(trainingScreen: .constant(.cvProcess))
-}
+//
+//#Preview {
+//    TrainingProcessView(trainingScreen: .constant(.cvProcess))
+//}

@@ -16,6 +16,7 @@ struct VisioFitApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(coreDataManager)
+                .environment(\.managedObjectContext, coreDataManager.context)
         }
     }
 }

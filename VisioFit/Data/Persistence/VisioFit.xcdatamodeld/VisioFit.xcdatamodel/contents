@@ -39,4 +39,10 @@
         <attribute name="totalCalories" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="exerciseSet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExerciseSet"/>
     </entity>
+    <entity name="WorkoutSet" representedClassName="WorkoutSet" syncable="YES" codeGenerationType="class">
+        <attribute name="approach" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="completedApproach" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
 </model>

@@ -3,6 +3,11 @@ import SwiftUI
 struct TrainingCompleteView: View {
     var onDismiss: () -> Void
     
+    @EnvironmentObject private var trainingViewModel: TrainingViewModel
+    
+        
+    // Во время экрана завершения всё равно анализируются и изменяются данные
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.baseBg.ignoresSafeArea()
@@ -18,7 +23,7 @@ struct TrainingCompleteView: View {
                                 Color.warmOrange.opacity(0.6)
                             }
                             .clipShape(Capsule())
-                        Text("88%")
+                        Text("\(trainingViewModel.averageAccuracy)%")
                             .headText(fontSize: 56)
                         Text("Средняя точность подхода")
                             .headText(fontSize: 16, weight: .medium)
@@ -32,7 +37,7 @@ struct TrainingCompleteView: View {
                         HStack(spacing: 15) {
                             Group {
                                 VStack {
-                                    Text("24")
+                                    Text("\(trainingViewModel.totalReps)")
                                         .orangeText(fontSize: 26)
                                     Text("повторений")
                                         .accentDescription(fontSize: 14)
@@ -44,7 +49,7 @@ struct TrainingCompleteView: View {
                                         .accentDescription(fontSize: 14)
                                 }
                                 VStack {
-                                    Text("8:34")
+                                    Text(trainingViewModel.timeString)
                                         .headText(fontSize: 26, weight: .bold)
                                     Text("мин")
                                         .accentDescription(fontSize: 14)
@@ -61,7 +66,7 @@ struct TrainingCompleteView: View {
                                     .blockLabel()
                                 Spacer()
                             }
-                            AccuracyChart(data: createData())
+                            AccuracyChart(data: trainingViewModel.accuracyArray)
                         }
                         .padding(15)
                         .frame(maxWidth: .infinity)
@@ -107,15 +112,7 @@ struct TrainingCompleteView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
-        }
-    }
-    
-    func createData() -> [Double] {
-        var data: [Double] = []
-        for _ in 0..<23 {
-            data.append(Double.random(in: 0...100))
-        }
-        return data
+        }.onAppear()
     }
 }
 
