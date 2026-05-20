@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct TrainingView: View {
-    @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
+    @FetchRequest(sortDescriptors: []) private var workoutSets: FetchedResults<WorkoutSet>
     
     var body: some View {
-//        if let user = users.first {
-//            AccoutContentView(user: user)
-//        } else {
-//            VStack {
-//                Text("Ошибка загрузки")
-//                    .headText()
-//            }
-//        }
+        if !workoutSets.isEmpty {
+            TrainingContentView(workoutSets: workoutSets)
+        } else {
+            VStack {
+                Text("Ошибка загрузки")
+                    .headText()
+            }
+        }
     }
     
     
@@ -23,6 +23,12 @@ struct TrainingContentView: View {
     @State private var isCV: Bool = false
     
     @State private var trainingType: TrainingType = .pushup
+    
+    private var workoutSets: FetchedResults<WorkoutSet>
+    
+    init(workoutSets: FetchedResults<WorkoutSet>) {
+        self.workoutSets = workoutSets
+    }
     
     var body: some View {
         ZStack {
@@ -66,17 +72,15 @@ struct TrainingContentView: View {
                             .padding(.top, 20)
                         
                         VStack(spacing: 15) {
-                            TrainigRow(name: "Отжимания", image: "0.square.fill", desctiptionCount: 3, isTime: false, percent: 52) {
-                                self.trainingType = .pushup
-                                showWindow = true
-                            }
-                            TrainigRow(name: "Приседания", image: "figure.cross.training", desctiptionCount: 3, isTime: false, percent: 67) {
-                                self.trainingType = .даун
-                                showWindow = true
-                            }
-                            TrainigRow(name: "Планка", image: "square", desctiptionCount: 3, isTime: true, percent: 100) {
-                                self.trainingType = .pushup
-                                showWindow = true
+                            ForEach(workoutSets) { workoutSet in
+                                TrainigRow(name: workoutSet.name ?? "Незвестное упражнение",
+                                           image: workoutSet.image ?? "square.fill",
+                                           desctiptionCount: Double(workoutSet.approach),
+                                           isTime: workoutSet.isTime,
+                                           percent: Double(workoutSet.completedApproach)) {
+                                    self.trainingType = workoutSet.trainingType
+                                    showWindow = true
+                                }
                             }
                         }
                         .padding(.top, 20)

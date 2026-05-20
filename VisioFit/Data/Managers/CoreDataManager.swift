@@ -13,10 +13,48 @@ class CoreDataManager: ObservableObject {
                 fatalError("Database loading error: \(error)")
             }
         }
+        
+        preloadDefaultData()
     }
     
     var context: NSManagedObjectContext {
         persistentContainer.viewContext
+    }
+    
+    func preloadDefaultData() {
+        let request: NSFetchRequest<WorkoutSet> = WorkoutSet.fetchRequest()
+        do {
+            let count = try context.count(for: request)
+            guard count == 0 else { return }
+            
+            let pushups = WorkoutSet(context: context)
+            pushups.id = UUID()
+            pushups.name = "Отжимания"
+            pushups.approach = 4
+            pushups.image = "0.square.fill"
+            pushups.isTime = false
+            pushups.completedApproach = 0
+            
+            let plank = WorkoutSet(context: context)
+            plank.id = UUID()
+            plank.name = "Планка"
+            plank.approach = 3
+            plank.image = "square"
+            plank.isTime = true
+            plank.completedApproach = 0
+            
+            let squats = WorkoutSet(context: context)
+            squats.id = UUID()
+            squats.name = "Приседания"
+            squats.approach = 4
+            squats.image = "figure.cross.training"
+            squats.isTime = false
+            squats.completedApproach = 0
+            
+            save()
+        } catch {
+            print("Database Preload error: \(error)")
+        }
     }
     
     func save() {

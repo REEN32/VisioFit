@@ -3,9 +3,9 @@ class ExerciseAnalyzerFactory {
         switch trainingType {
         case .pushup:
             return PushUpAnalyzer()
-        case .даун:
+        case .squat:
             fatalError()
-        case .планка:
+        case .plank:
             fatalError()
         }
     }

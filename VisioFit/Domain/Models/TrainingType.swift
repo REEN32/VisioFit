@@ -1,5 +1,5 @@
 enum TrainingType {
     case pushup
-    case планка
-    case даун
+    case plank
+    case squat
 }
