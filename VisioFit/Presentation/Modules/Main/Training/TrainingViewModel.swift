@@ -5,6 +5,9 @@ import CoreData
 class TrainingViewModel: ObservableObject {
     @Published var reps: Int = 0
     var totalReps: Int = 0
+    var badReps: Int = 0
+    var goodReps: Int = 0
+    var perfectReps: Int = 0
     @Published var currentAccuracy: Int = 100
     @Published var accuracyArray: [Double] = []
     @Published var trainingTime: TimeInterval = 0
@@ -45,6 +48,24 @@ class TrainingViewModel: ObservableObject {
         cameraVM.$count
             .sink { [weak self] count in
                 self?.reps = count
+            }
+            .store(in: &cancellables)
+        
+        cameraVM.$badCount
+            .sink { [weak self] badCount in
+                self?.badReps = badCount
+            }
+            .store(in: &cancellables)
+        
+        cameraVM.$goodCount
+            .sink { [weak self] goodCount in
+                self?.goodReps = goodCount
+            }
+            .store(in: &cancellables)
+        
+        cameraVM.$perfectCount
+            .sink { [weak self] perfectCount in
+                self?.perfectReps = perfectCount
             }
             .store(in: &cancellables)
     }

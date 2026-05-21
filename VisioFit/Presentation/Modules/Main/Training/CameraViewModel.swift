@@ -8,11 +8,16 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     @Published var accuracy: Int = 100
 //    @Published var pointsPosition: [CGPoint] = [] Для отрисовки скелета
     @Published var count: Int = 0
+    @Published var badCount: Int = 0
+    @Published var goodCount: Int = 0
+    @Published var perfectCount: Int = 0
+    
     
     private let request = VNDetectHumanBodyPoseRequest()
     private var lastTimeStap = Date()
     private let timeStap = 0.05
     private var currentAnalyzer: ExerciseAnalyzer
+    private var isPrepareTime: Bool = true
     
     init(analyzer: ExerciseAnalyzer) {
         self.currentAnalyzer = analyzer
@@ -85,6 +90,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
+        guard !isPrepareTime else { return }
         guard Date().timeIntervalSince(self.lastTimeStap) > self.timeStap else { return }
         
         let handler = VNImageRequestHandler(cmSampleBuffer: sampleBuffer, orientation: .leftMirrored, options: [:])
@@ -128,6 +134,9 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                     self.currentAnalyzer.analyze(pose: pose)
                     self.count = self.currentAnalyzer.count
                     self.accuracy = self.currentAnalyzer.accuracy
+                    self.badCount = self.currentAnalyzer.badCount
+                    self.goodCount = self.currentAnalyzer.goodCount
+                    self.perfectCount = self.currentAnalyzer.perfectCount
                     
                     self.lastTimeStap = Date()
                 }
@@ -142,5 +151,13 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         self.count = 0
         self.accuracy = 100
         self.currentAnalyzer.reset()
+    }
+    
+    func startPrepareTime() {
+        self.isPrepareTime = true
+    }
+    
+    func stopPrepareTime() {
+        self.isPrepareTime = false
     }
 }

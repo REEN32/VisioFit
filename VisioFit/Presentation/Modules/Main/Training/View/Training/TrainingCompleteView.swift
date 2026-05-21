@@ -50,7 +50,7 @@ struct TrainingCompleteView: View {
                                         .accentDescription(fontSize: 14)
                                 }
                                 VStack {
-                                    Text("12")
+                                    Text("\(trainingViewModel.perfectReps)")
                                         .statisticsText(isPositive: true, fontSize: 26)
                                     Text("идеальных")
                                         .accentDescription(fontSize: 14)
@@ -81,7 +81,7 @@ struct TrainingCompleteView: View {
                         
                         HStack(spacing: 15) {
                             VStack {
-                                Text("7")
+                                Text("\(trainingViewModel.perfectReps)")
                                     .statisticsText(isPositive: true, fontSize: 26)
                                 Text("идеальных")
                                     .accentDescription(fontSize: 14)
@@ -90,7 +90,7 @@ struct TrainingCompleteView: View {
                             .frame(maxWidth: .infinity)
                             .greenTintBlock()
                             VStack {
-                                Text("10")
+                                Text("\(trainingViewModel.goodReps)")
                                     .orangeText(fontSize: 26)
                                 Text("хороших")
                                     .accentDescription(fontSize: 14)
@@ -99,7 +99,7 @@ struct TrainingCompleteView: View {
                             .frame(maxWidth: .infinity)
                             .orangeTintBlock()
                             VStack {
-                                Text("5")
+                                Text("\(trainingViewModel.badReps)")
                                     .statisticsText(isPositive: false, fontSize: 26)
                                 Text("плохих")
                                     .accentDescription(fontSize: 14)
@@ -146,7 +146,3 @@ struct TrainingCompleteView: View {
         }
     }
 }
-
-//#Preview {
-//    TrainingCompleteView()
-//}

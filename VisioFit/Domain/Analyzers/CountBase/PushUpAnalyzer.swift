@@ -3,7 +3,9 @@ import Foundation
 class PushUpAnalyzer: ExerciseAnalyzer {
     private(set) var accuracy: Int = 100
     private(set) var count: Int = 0
-    privat
+    private(set) var badCount: Int = 0
+    private(set) var goodCount: Int = 0
+    private(set) var perfectCount: Int = 0
     
     private let timeStap = 0.05
     private var accuracyArray: [Int] = []
@@ -37,8 +39,18 @@ class PushUpAnalyzer: ExerciseAnalyzer {
         }
         
         if (Double(self.lastAngle.left + self.lastAngle.right) / 2) < 100 && isPushUp {
-            self.count += 1
             self.isPushUp = false
+            self.count += 1
+            switch accuracy {
+            case 0...60:
+                self.badCount += 1
+            case 61...85:
+                self.goodCount += 1
+            case 86...100:
+                self.perfectCount += 1
+            default:
+                _ = 0
+            }
         }
         
         if (Double(self.lastAngle.left + self.lastAngle.right) / 2) > 150 {

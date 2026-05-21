@@ -100,8 +100,8 @@ struct TrainingProcessView: View {
             }
         }
         .onAppear {
+            cameraViewModel.startPrepareTime()
             cameraViewModel.reset()
-            
             cameraViewModel.start()
             startCountdown(for: countdown)
         }
@@ -131,6 +131,7 @@ struct TrainingProcessView: View {
                 self.isCountingDown = false
                 
                 cameraViewModel.reset()
+                cameraViewModel.stopPrepareTime()
                 trainingViewModel.startTimer()
                 trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
             }
