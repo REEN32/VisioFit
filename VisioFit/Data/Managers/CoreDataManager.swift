@@ -99,4 +99,14 @@ class CoreDataManager: ObservableObject {
             print("CoreData delete user error: \(error)")
         }
     }
+    
+    func getWorkouts() {
+        let request: NSFetchRequest<Workout> = Workout.fetchRequest()
+        do {
+            let workouts = try context.fetch(request)
+            print(workouts)
+        } catch {
+            print("CoreData fetch workouts error: \(error)")
+        }
+    }
 }

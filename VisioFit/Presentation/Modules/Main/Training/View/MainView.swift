@@ -77,6 +77,7 @@ struct MainView: View {
                                     chartType = .steps
                                 }
                                 statBlock(iconName: "figure.step.training", value: 5.3, description: "км") {
+                                    CoreDataManager.shared.getWorkouts()
                                     chartType = .range
                                 }
                                 statBlock(iconName: "clock", value: 45, description: "мин трен") {

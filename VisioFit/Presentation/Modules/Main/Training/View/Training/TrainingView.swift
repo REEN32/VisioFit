@@ -3,9 +3,14 @@ import SwiftUI
 struct TrainingView: View {
     @FetchRequest(sortDescriptors: []) private var workoutSets: FetchedResults<WorkoutSet>
     
+    @FetchRequest(sortDescriptors: [], predicate: RequestViewModel.todayPredicate())
+    private var todayWorkouts: FetchedResults<Workout>
+    
+    private let requestViewModel: RequestViewModel = RequestViewModel()
+    
     var body: some View {
         if !workoutSets.isEmpty {
-            TrainingContentView(workoutSets: workoutSets)
+            TrainingContentView(workoutSets: workoutSets, workouts: todayWorkouts, requestViewModel: requestViewModel)
         } else {
             VStack {
                 Text("Ошибка загрузки")
@@ -13,8 +18,6 @@ struct TrainingView: View {
             }
         }
     }
-    
-    
 }
 
 struct TrainingContentView: View {
@@ -26,9 +29,14 @@ struct TrainingContentView: View {
     @State private var selectedWorkoutSet: WorkoutSet?
     
     private var workoutSets: FetchedResults<WorkoutSet>
+    private var workouts: FetchedResults<Workout>
     
-    init(workoutSets: FetchedResults<WorkoutSet>) {
+    private let requestViewModel: RequestViewModel
+    
+    init(workoutSets: FetchedResults<WorkoutSet>, workouts: FetchedResults<Workout>, requestViewModel: RequestViewModel) {
         self.workoutSets = workoutSets
+        self.workouts = workouts
+        self.requestViewModel = requestViewModel
     }
     
     var body: some View {
@@ -78,8 +86,7 @@ struct TrainingContentView: View {
                                            image: workoutSet.image ?? "square.fill",
                                            desctiptionCount: Double(workoutSet.approach),
                                            isTime: workoutSet.isTime,
-                                           percent: //добавить норм progress bar percent
-                                            Double(workoutSet.completedApproach) / Double(workoutSet.approach) * 100)
+                                           percent: requestViewModel.calculatePercent(for: workoutSet, in: self.workouts))
                                 {
                                     self.trainingType = workoutSet.trainingType
                                     self.selectedWorkoutSet = workoutSet
@@ -116,6 +123,8 @@ struct TrainingContentView: View {
             }
         }
     }
+    
+    
     
     @ViewBuilder
     private func selectWindow() -> some View {

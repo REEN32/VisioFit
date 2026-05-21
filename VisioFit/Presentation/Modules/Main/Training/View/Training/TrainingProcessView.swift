@@ -8,6 +8,9 @@ struct TrainingProcessView: View {
     @EnvironmentObject private var trainingViewModel: TrainingViewModel
     @Environment(\.managedObjectContext) private var context
     
+    @State private var countdown: Int = 5
+    @State private var isCountingDown: Bool = true
+    
     private var workoutSet: WorkoutSet
     
     init(trainingScreen: Binding<TrainingScreen>, cameraViewModel: CameraViewModel, workoutSet: WorkoutSet) {
@@ -85,12 +88,22 @@ struct TrainingProcessView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .overlay {
+            if isCountingDown {
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                    
+                    Text(countdown > 0 ? "\(countdown)" : "СТАРТ!")
+                        .headText(fontSize: 60, weight: .bold)
+                }
+            }
+        }
         .onAppear {
             cameraViewModel.reset()
             
             cameraViewModel.start()
-            trainingViewModel.startTimer()
-            trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
+            startCountdown(for: countdown)
         }
         .onDisappear {
             cameraViewModel.stop()
@@ -100,6 +113,26 @@ struct TrainingProcessView: View {
             if newValue >= workoutSet.requirementReps {
                 self.trainingViewModel.stopTimer()
                 trainingScreen = .rest
+            }
+        }
+    }
+    
+    private func startCountdown(for duration: Int) {
+        if duration > 0 {
+            self.countdown = duration
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.startCountdown(for: duration - 1)
+            }
+        } else {
+            self.countdown = 0
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isCountingDown = false
+                
+                cameraViewModel.reset()
+                trainingViewModel.startTimer()
+                trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
             }
         }
     }

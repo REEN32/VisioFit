@@ -1,8 +1,10 @@
 import SwiftUI
+import CoreData
 
 struct TrainingCompleteView: View {
     var onDismiss: () -> Void
     
+    @EnvironmentObject private var coreDataManager: CoreDataManager
     @EnvironmentObject private var trainingViewModel: TrainingViewModel
     @Environment(\.managedObjectContext) private var context
     
@@ -116,6 +118,27 @@ struct TrainingCompleteView: View {
                     .padding(.top, 20)
                 }
                 .frame(maxWidth: .infinity)
+            }
+        }
+        .onAppear {
+            DispatchQueue.global(qos: .default).async {
+                coreDataManager.addEntity(Workout.self) { workout in
+                    let metric = MetricPoint(context: context)
+                    metric.quality = Double(trainingViewModel.averageAccuracy)
+                    
+                    let exerciseSet = ExerciseSet(context: context)
+                    exerciseSet.approach = workoutSet.completedApproach
+                    // Дописать
+                    exerciseSet.name = workoutSet.name
+                    exerciseSet.count = Int16(trainingViewModel.totalReps)
+                    exerciseSet.metricPoint = metric
+                    
+                    workout.id = UUID()
+                    workout.date = Date()
+                    workout.duration = Int64(trainingViewModel.trainingTime)
+                    workout.totalCalories = 100 // Заменить на подсчёт каллорий
+                    workout.exerciseSet = exerciseSet
+                }
             }
         }
         .onDisappear {

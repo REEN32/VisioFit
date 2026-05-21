@@ -55,23 +55,29 @@ struct TrainingRestView: View {
                     
                     Spacer()
                     
-                    HStack(spacing: 15) {
-                        DefaultButton(label: "Добавить вермя") {
-                            showWindow = true
-                        }
-                        DefaultButton(label: "Следующий подход") {
-                            trainingViewModel.stopRestTimer()
-                            if workoutSet.approach <= workoutSet.completedApproach {
-                                trainingScreen = .complete
-                            } else if isCV {
-                                trainingScreen = .cvProcess
-                            } else {
-                                trainingScreen = .handleProcess
+                    VStack(spacing: 15) {
+                        HStack(spacing: 15) {
+                            DefaultButton(label: "Добавить вермя") {
+                                showWindow = true
+                            }
+                            DefaultButton(label: "Следующий подход") {
+                                trainingViewModel.stopRestTimer()
+                                if workoutSet.approach <= workoutSet.completedApproach {
+                                    trainingScreen = .complete
+                                } else if isCV {
+                                    trainingScreen = .cvProcess
+                                } else {
+                                    trainingScreen = .handleProcess
+                                }
                             }
                         }
+                        .frame(maxHeight: proxy.size.height * 0.1)
+                        DefaultButton(label: "Закончить тренировку") {
+                            trainingScreen = .complete
+                        }
+                        .frame(maxHeight: proxy.size.height * 0.1)
                     }
                     .padding(.horizontal, 15)
-                    .frame(maxHeight: proxy.size.height * 0.1)
                 }
                 if showWindow {
                     VStack() {

@@ -3,6 +3,7 @@ import Foundation
 class PushUpAnalyzer: ExerciseAnalyzer {
     private(set) var accuracy: Int = 100
     private(set) var count: Int = 0
+    privat
     
     private let timeStap = 0.05
     private var accuracyArray: [Int] = []
