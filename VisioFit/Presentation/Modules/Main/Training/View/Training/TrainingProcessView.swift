@@ -6,10 +6,14 @@ struct TrainingProcessView: View {
     @ObservedObject private var cameraViewModel: CameraViewModel
     
     @EnvironmentObject private var trainingViewModel: TrainingViewModel
+    @Environment(\.managedObjectContext) private var context
     
-    init(trainingScreen: Binding<TrainingScreen>, cameraViewModel: CameraViewModel) {
+    private var workoutSet: WorkoutSet
+    
+    init(trainingScreen: Binding<TrainingScreen>, cameraViewModel: CameraViewModel, workoutSet: WorkoutSet) {
         self._trainingScreen = trainingScreen
         self.cameraViewModel = cameraViewModel
+        self.workoutSet = workoutSet
     }
     
     var body: some View {
@@ -20,19 +24,19 @@ struct TrainingProcessView: View {
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(alignment: .lastTextBaseline) {
-                            Text("Приседания")
+                            Text(workoutSet.name ?? "Неизвесное")
                                 .headText(fontSize: 26)
                             Spacer()
-                            Text("3 подход")
+                            Text("\(workoutSet.completedApproach) подход")
                                 .headText(fontSize: 18)
                         }
                         HStack(alignment: .lastTextBaseline) {
-                            Text("\(trainingViewModel.totalReps)")
+                            Text("\(trainingViewModel.reps)")
                                 .headText(fontSize: 60)
                             Text("повторений")
                                 .headText(fontSize: 22, weight: .medium)
                         }
-                        RepeatCountLines(count: trainingViewModel.totalReps, target: 12)
+                        RepeatCountLines(count: trainingViewModel.reps, target: Int(workoutSet.requirementReps))
                     }
                     .padding(.horizontal, 15)
                     .padding(.bottom, 20)
@@ -82,15 +86,21 @@ struct TrainingProcessView: View {
             }
         }
         .onAppear {
+            cameraViewModel.reset()
+            
             cameraViewModel.start()
             trainingViewModel.startTimer()
+            trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
         }
         .onDisappear {
             cameraViewModel.stop()
+            trainingViewModel.updateReps()
+        }
+        .onChange(of: trainingViewModel.reps) { _, newValue in
+            if newValue >= workoutSet.requirementReps {
+                self.trainingViewModel.stopTimer()
+                trainingScreen = .rest
+            }
         }
     }
 }
-//
-//#Preview {
-//    TrainingProcessView(trainingScreen: .constant(.cvProcess))
-//}

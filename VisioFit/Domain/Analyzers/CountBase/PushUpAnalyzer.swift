@@ -7,6 +7,7 @@ class PushUpAnalyzer: ExerciseAnalyzer {
     private let timeStap = 0.05
     private var accuracyArray: [Int] = []
     private var lastAngle: (left: CGFloat, right: CGFloat) = (180, 180)
+    private var isPushUp: Bool = true
     
     func analyze(pose: BodyPoseData) {
         guard let sholders = pose.shoulders else { return }
@@ -27,15 +28,20 @@ class PushUpAnalyzer: ExerciseAnalyzer {
             self.calculateAccuracy(shouldersDiff: diff, angle: self.lastAngle, speed: speed)
         }
         
-        if self.accuracyArray.count > Int((1 / self.timeStap).rounded(.up)) {
+        if self.accuracyArray.count > Int((0.3 / self.timeStap).rounded(.up)) {
             let sum = self.accuracyArray.reduce(0, +)
             let average = Double(sum) / Double(self.accuracyArray.count)
             self.accuracy = average < 0 ? 0 : Int(average)
             self.accuracyArray.removeAll()
         }
         
-        if (Double(self.lastAngle.left + self.lastAngle.right) / 2) < 100 {
+        if (Double(self.lastAngle.left + self.lastAngle.right) / 2) < 100 && isPushUp {
             self.count += 1
+            self.isPushUp = false
+        }
+        
+        if (Double(self.lastAngle.left + self.lastAngle.right) / 2) > 150 {
+            self.isPushUp = true
         }
     }
     
@@ -71,5 +77,10 @@ class PushUpAnalyzer: ExerciseAnalyzer {
         }
         
         self.accuracyArray.append(Int(currentAccuracy))
+    }
+
+    func reset() {
+        self.count = 0
+        self.accuracy = 100
     }
 }

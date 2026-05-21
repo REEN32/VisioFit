@@ -23,6 +23,7 @@ struct TrainingContentView: View {
     @State private var isCV: Bool = false
     
     @State private var trainingType: TrainingType = .pushup
+    @State private var selectedWorkoutSet: WorkoutSet?
     
     private var workoutSets: FetchedResults<WorkoutSet>
     
@@ -47,7 +48,7 @@ struct TrainingContentView: View {
                                     VStack(alignment: .leading, spacing: 0) {
                                         Text("План на день")
                                             .headText(fontSize: 20)
-                                        Text("4 упр • 35 мин")
+                                        Text("\(workoutSets.count) упр • \(workoutSets.count * 7) мин")
                                             .accentDescription(fontSize: 16)
                                     }
                                 }
@@ -77,8 +78,11 @@ struct TrainingContentView: View {
                                            image: workoutSet.image ?? "square.fill",
                                            desctiptionCount: Double(workoutSet.approach),
                                            isTime: workoutSet.isTime,
-                                           percent: Double(workoutSet.completedApproach)) {
+                                           percent: //добавить норм progress bar percent
+                                            Double(workoutSet.completedApproach) / Double(workoutSet.approach) * 100)
+                                {
                                     self.trainingType = workoutSet.trainingType
+                                    self.selectedWorkoutSet = workoutSet
                                     showWindow = true
                                 }
                             }
@@ -107,14 +111,8 @@ struct TrainingContentView: View {
             }
         }
         .fullScreenCover(isPresented: $changeScreen) {
-            if isCV {
-                TrainingRouter(trainingScreen: .cvProcess, trainingType: trainingType) {
-                    changeScreen = false
-                }
-            } else {
-                TrainingRouter(trainingScreen: .handleProcess, trainingType: trainingType) {
-                    changeScreen = false
-                }
+            TrainingRouter(trainingType: trainingType, workoutSet: selectedWorkoutSet!, isCV: isCV) {
+                changeScreen = false
             }
         }
     }

@@ -8,9 +8,10 @@ struct TrainingRouter: View {
     @StateObject private var trainingViewModel: TrainingViewModel
     
     private var trainingType: TrainingType
+    private let workoutSet: WorkoutSet
+    private let isCV: Bool
     
-    init(trainingScreen: TrainingScreen, trainingType: TrainingType, onFinish: @escaping () -> Void) {
-        self.trainingScreen = trainingScreen
+    init(trainingType: TrainingType, workoutSet: WorkoutSet, isCV: Bool, onFinish: @escaping () -> Void) {
         self.onFinish = onFinish
         self.trainingType = trainingType
         
@@ -19,19 +20,27 @@ struct TrainingRouter: View {
         
         let trainingVM = TrainingViewModel(cameraVM: cameraVM)
         self._trainingViewModel = StateObject(wrappedValue: trainingVM)
+        
+        self.workoutSet = workoutSet
+        self.isCV = isCV
+        if isCV {
+            self.trainingScreen = .cvProcess
+        } else {
+            self.trainingScreen = .handleProcess
+        }
     }
     
     var body: some View {
         Group {
             switch trainingScreen {
             case .rest:
-                TrainingRestView(trainingScreen: $trainingScreen)
+                TrainingRestView(trainingScreen: $trainingScreen, workoutSet: workoutSet, isCV: isCV)
             case .cvProcess:
-                TrainingProcessView(trainingScreen: $trainingScreen, cameraViewModel: cameraViewModel)
+                TrainingProcessView(trainingScreen: $trainingScreen, cameraViewModel: cameraViewModel, workoutSet: workoutSet)
             case .handleProcess:
-                TrainingHandleView(trainingScreen: $trainingScreen)
+                TrainingHandleView(trainingScreen: $trainingScreen, workoutSet: workoutSet)
             case .complete:
-                TrainingCompleteView(onDismiss: onFinish)
+                TrainingCompleteView(workoutSet: workoutSet, onDismiss: onFinish)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

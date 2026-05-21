@@ -6,6 +6,14 @@ struct TrainingHandleView: View {
     
     @Binding var trainingScreen: TrainingScreen
     @EnvironmentObject private var trainingViewModel: TrainingViewModel
+    @Environment(\.managedObjectContext) private var context
+    
+    private var workoutSet: WorkoutSet
+    
+    init(trainingScreen: Binding<TrainingScreen>, workoutSet: WorkoutSet) {
+        self._trainingScreen = trainingScreen
+        self.workoutSet = workoutSet
+    }
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -15,10 +23,10 @@ struct TrainingHandleView: View {
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(alignment: .lastTextBaseline) {
-                            Text("Приседания")
+                            Text(workoutSet.name ?? "Неизвестно")
                                 .headText(fontSize: 26)
                             Spacer()
-                            Text("3 подход")
+                            Text("\(workoutSet.completedApproach) подход")
                                 .headText(fontSize: 18)
                         }
                         HStack(alignment: .lastTextBaseline) {
@@ -98,6 +106,14 @@ struct TrainingHandleView: View {
                 
                 .frame(maxWidth: .infinity)
             }
+        }
+        .onAppear {
+            trainingViewModel.startTimer()
+            trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
+        }
+        .onDisappear {
+            trainingViewModel.updateReps()
+            trainingViewModel.stopTimer()
         }
     }
 }

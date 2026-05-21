@@ -4,9 +4,14 @@ struct TrainingCompleteView: View {
     var onDismiss: () -> Void
     
     @EnvironmentObject private var trainingViewModel: TrainingViewModel
+    @Environment(\.managedObjectContext) private var context
     
-        
-    // Во время экрана завершения всё равно анализируются и изменяются данные
+    private var workoutSet: WorkoutSet
+    
+    init(workoutSet: WorkoutSet, onDismiss: @escaping () -> Void) {
+        self.workoutSet = workoutSet
+        self.onDismiss = onDismiss
+    }
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -112,7 +117,10 @@ struct TrainingCompleteView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
-        }.onAppear()
+        }
+        .onDisappear {
+            trainingViewModel.cleanApproach(workoutSet: workoutSet, context: context)
+        }
     }
 }
 

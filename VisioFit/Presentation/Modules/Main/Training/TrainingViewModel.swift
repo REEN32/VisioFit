@@ -1,8 +1,10 @@
 import Combine
 import Foundation
+import CoreData
 
 class TrainingViewModel: ObservableObject {
-    @Published var totalReps: Int = 0
+    @Published var reps: Int = 0
+    var totalReps: Int = 0
     @Published var currentAccuracy: Int = 100
     @Published var accuracyArray: [Double] = []
     @Published var trainingTime: TimeInterval = 0
@@ -42,7 +44,7 @@ class TrainingViewModel: ObservableObject {
         
         cameraVM.$count
             .sink { [weak self] count in
-                self?.totalReps = count
+                self?.reps = count
             }
             .store(in: &cancellables)
     }
@@ -59,7 +61,8 @@ class TrainingViewModel: ObservableObject {
     
     private func updateDuration() {
         guard let startTimerDate else { return }
-        self.trainingTime = Date().timeIntervalSince(startTimerDate)
+        self.trainingTime += Date().timeIntervalSince(startTimerDate)
+        self.startTimerDate = Date()
     }
     
     func stopTimer() {
@@ -85,5 +88,34 @@ class TrainingViewModel: ObservableObject {
     
     func addRestTime(_ seconds: Int) {
         self.restTime += Double(seconds)
+    }
+    
+    func addApproach(workoutSet: WorkoutSet, context: NSManagedObjectContext) {
+        workoutSet.completedApproach += 1
+        do {
+            try context.save()
+        } catch {
+            print("Training workout save error: \(error)")
+        }
+    }
+    
+    func cleanApproach(workoutSet: WorkoutSet, context: NSManagedObjectContext) {
+        workoutSet.completedApproach = 0
+        
+        do {
+            try context.save()
+        } catch {
+            print("Training workout save error: \(error)")
+        }
+    }
+    
+    func updateReps() {
+        self.totalReps += self.reps
+        self.reps = 0
+        self.cameraVM.count = 0
+    }
+    
+    func updateRestTime() {
+        self.restTime = 20
     }
 }

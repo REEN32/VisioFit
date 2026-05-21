@@ -8,6 +8,15 @@ struct TrainingRestView: View {
     
     @EnvironmentObject private var trainingViewModel: TrainingViewModel
     
+    private var workoutSet: WorkoutSet
+    private var isCV: Bool
+    
+    init(trainingScreen: Binding<TrainingScreen>, workoutSet: WorkoutSet, isCV: Bool) {
+        self._trainingScreen = trainingScreen
+        self.workoutSet = workoutSet
+        self.isCV = isCV
+    }
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.baseBg.ignoresSafeArea()
@@ -17,9 +26,9 @@ struct TrainingRestView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("Упражнение 2/5")
+                                Text("Упражнение \(workoutSet.completedApproach)/\(workoutSet.approach)")
                                     .headText(fontSize: 24, weight: .bold)
-                                Text("Планка")
+                                Text(workoutSet.name ?? "Неизвестно")
                                     .headText(fontSize: 36)
                                 Text(trainingViewModel.timeString)
                                     .headText(fontSize: 56)
@@ -52,7 +61,13 @@ struct TrainingRestView: View {
                         }
                         DefaultButton(label: "Следующий подход") {
                             trainingViewModel.stopRestTimer()
-                            trainingScreen = .complete
+                            if workoutSet.approach <= workoutSet.completedApproach {
+                                trainingScreen = .complete
+                            } else if isCV {
+                                trainingScreen = .cvProcess
+                            } else {
+                                trainingScreen = .handleProcess
+                            }
                         }
                     }
                     .padding(.horizontal, 15)
@@ -69,13 +84,20 @@ struct TrainingRestView: View {
             }
         }
         .onAppear {
+            trainingViewModel.updateRestTime()
             trainingViewModel.startRestTimer()
         }
         .onChange(of: trainingViewModel.restTime) { oldValue, newValue in
             if newValue == 0 {
                 DispatchQueue.main.async {
                     trainingViewModel.stopRestTimer()
-                    trainingScreen = .complete
+                    if workoutSet.completedApproach >= workoutSet.approach {
+                        trainingScreen = .complete
+                    } else if isCV {
+                        trainingScreen = .cvProcess
+                    } else {
+                        trainingScreen = .handleProcess
+                    }
                 }
             }
         }

@@ -34,6 +34,7 @@ class CoreDataManager: ObservableObject {
             pushups.image = "0.square.fill"
             pushups.isTime = false
             pushups.completedApproach = 0
+            pushups.requirementReps = 12
             
             let plank = WorkoutSet(context: context)
             plank.id = UUID()
@@ -42,6 +43,7 @@ class CoreDataManager: ObservableObject {
             plank.image = "square"
             plank.isTime = true
             plank.completedApproach = 0
+            pushups.requirementReps = 12
             
             let squats = WorkoutSet(context: context)
             squats.id = UUID()
@@ -50,6 +52,7 @@ class CoreDataManager: ObservableObject {
             squats.image = "figure.cross.training"
             squats.isTime = false
             squats.completedApproach = 0
+            pushups.requirementReps = 12
             
             save()
         } catch {

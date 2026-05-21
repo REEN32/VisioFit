@@ -138,5 +138,9 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         }
     }
     
-    
+    func reset() {
+        self.count = 0
+        self.accuracy = 100
+        self.currentAnalyzer.reset()
+    }
 }
