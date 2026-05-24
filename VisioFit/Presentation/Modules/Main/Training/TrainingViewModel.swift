@@ -31,8 +31,8 @@ class TrainingViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    var averageAccuracy: Int {
-        accuracyArray.isEmpty ? 0 : Int(accuracyArray.reduce(0, +) / Double(accuracyArray.count))
+    var averageAccuracy: Int? {
+        accuracyArray.isEmpty ? nil : Int(accuracyArray.reduce(0, +) / Double(accuracyArray.count))
     }
     
     init(cameraVM: CameraViewModel) {

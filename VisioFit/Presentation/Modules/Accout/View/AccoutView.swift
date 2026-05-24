@@ -96,8 +96,13 @@ struct AccoutContentView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                     VStack {
-                                        Text("\(accountViewModel.averageAccuracy)%")
-                                            .orangeText(fontSize: 32)
+                                        if let accuracy = accountViewModel.averageAccuracy {
+                                            Text("\(accuracy)%")
+                                                .orangeText(fontSize: 32)
+                                        } else {
+                                            Text("—%")
+                                                .orangeText(fontSize: 32)
+                                        }
                                         Text("Точность")
                                             .accentDescription(fontSize: 14)
                                     }

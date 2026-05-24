@@ -87,19 +87,19 @@ class CoreDataManager: ObservableObject {
         self.save()
     }
     
-//    func addWorkout(workout: (User) -> Void) {
-//        let request: NSFetchRequest<User> = User.fetchRequest()
-//        
-//        do {
-//            let users = try context.fetch(request)
-//            if let user = users.first {
-//                workout(user)
-//                self.save()
-//            }
-//        } catch {
-//            print("DataBase create workout error: \(error)")
-//        }
-//    }
+    func addWorkout(workout: (User) -> Void) {
+        let request: NSFetchRequest<User> = User.fetchRequest()
+        
+        do {
+            let users = try context.fetch(request)
+            if let user = users.first {
+                workout(user)
+                self.save()
+            }
+        } catch {
+            print("DataBase create workout error: \(error)")
+        }
+    }
     
     //============================================================
     func deleteUser() {
@@ -119,6 +119,32 @@ class CoreDataManager: ObservableObject {
         do {
             let workouts = try context.fetch(request)
             print(workouts)
+        } catch {
+            print("CoreData fetch workouts error: \(error)")
+        }
+    }
+//    
+//    func getUserWorkouts() {
+//        let request: NSFetchRequest<User> = User.fetchRequest()
+//        
+//        do {
+//            let users = try context.fetch(request)
+//            if let user = users.first {
+//                let workouts = user.workout
+//                print(workouts ?? [])
+//            }
+//        } catch {
+//            print("CoreData fetch workouts error: \(error)")
+//        }
+//    }
+    
+    func getWorkoutsAccuracy() {
+        let request: NSFetchRequest<Workout> = Workout.fetchRequest()
+        do {
+            let workouts = try context.fetch(request)
+            for workout in workouts {
+                print(workout.exerciseSet?.metricPoint?.quality ?? -1)
+            }
         } catch {
             print("CoreData fetch workouts error: \(error)")
         }

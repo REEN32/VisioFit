@@ -81,6 +81,7 @@ struct MainView: View {
                                     chartType = .range
                                 }
                                 statBlock(iconName: "clock", value: 45, description: "мин трен") {
+                                    CoreDataManager.shared.getWorkoutsAccuracy()
                                     chartType = .time
                                 }
                             }

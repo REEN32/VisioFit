@@ -2,7 +2,7 @@ import Combine
 import CoreData
 
 class AccountViewModel: ObservableObject {
-    @Published var averageAccuracy: Int = 0
+    @Published var averageAccuracy: Int?
     
     func calculateAverageAccuracy(from workouts: NSSet) {
         print("in function")
