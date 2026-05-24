@@ -43,7 +43,7 @@ class CoreDataManager: ObservableObject {
             plank.image = "square"
             plank.isTime = true
             plank.completedApproach = 0
-            pushups.requirementReps = 12
+            plank.requirementReps = 30
             
             let squats = WorkoutSet(context: context)
             squats.id = UUID()
@@ -52,7 +52,7 @@ class CoreDataManager: ObservableObject {
             squats.image = "figure.cross.training"
             squats.isTime = false
             squats.completedApproach = 0
-            pushups.requirementReps = 12
+            squats.requirementReps = 12
             
             save()
         } catch {
@@ -86,6 +86,20 @@ class CoreDataManager: ObservableObject {
         setup(newObject)
         self.save()
     }
+    
+//    func addWorkout(workout: (User) -> Void) {
+//        let request: NSFetchRequest<User> = User.fetchRequest()
+//        
+//        do {
+//            let users = try context.fetch(request)
+//            if let user = users.first {
+//                workout(user)
+//                self.save()
+//            }
+//        } catch {
+//            print("DataBase create workout error: \(error)")
+//        }
+//    }
     
     //============================================================
     func deleteUser() {

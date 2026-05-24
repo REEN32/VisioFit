@@ -4,9 +4,11 @@ import CoreData
 struct AccoutView: View {
     @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
     
+    private let accountViewModel: AccountViewModel = AccountViewModel()
+    
     var body: some View {
         if let user = users.first {
-            AccoutContentView(user: user)
+            AccoutContentView(user: user, accountViewModel: accountViewModel)
         } else {
             VStack {
                 Text("Ошибка загрузки")
@@ -29,6 +31,8 @@ struct AccoutContentView: View {
     @Environment(\.managedObjectContext) private var context
     
     @State private var activeParam: ActiveParam?
+    
+    let accountViewModel: AccountViewModel
     
     var body: some View {
         NavigationStack {
@@ -85,14 +89,14 @@ struct AccoutContentView: View {
                             HStack(spacing: 20) {
                                 Group {
                                     VStack {
-                                        Text("38")
+                                        Text("\(user.workout?.count ?? 0)")
                                             .orangeText(fontSize: 32)
                                         Text("Тренировок")
                                             .accentDescription(fontSize: 14)
                                     }
                                     .frame(maxWidth: .infinity)
                                     VStack {
-                                        Text("87%")
+                                        Text("\(accountViewModel.averageAccuracy)%")
                                             .orangeText(fontSize: 32)
                                         Text("Точность")
                                             .accentDescription(fontSize: 14)
@@ -209,6 +213,11 @@ struct AccoutContentView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            print("Before appear")
+            accountViewModel.calculateAverageAccuracy(from: user.workout ?? [])
+            print("after appear")
         }
     }
 }

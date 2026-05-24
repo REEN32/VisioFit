@@ -139,6 +139,27 @@ struct TrainingCompleteView: View {
                     workout.totalCalories = 100 // Заменить на подсчёт каллорий
                     workout.exerciseSet = exerciseSet
                 }
+//                coreDataManager.addWorkout { user in
+//                    // Протестить работоспособность (скорее всего не работает в TrainingView)
+//                    let metric = MetricPoint(context: context)
+//                    metric.quality = Double(trainingViewModel.averageAccuracy)
+//
+//                    let exerciseSet = ExerciseSet(context: context)
+//                    exerciseSet.approach = workoutSet.completedApproach
+//                    // Дописать
+//                    exerciseSet.name = workoutSet.name
+//                    exerciseSet.count = Int16(trainingViewModel.totalReps)
+//                    exerciseSet.metricPoint = metric
+//                    
+//                    let workout = Workout()
+//                    workout.id = UUID()
+//                    workout.date = Date()
+//                    workout.duration = Int64(trainingViewModel.trainingTime)
+//                    workout.totalCalories = 100 // Заменить на подсчёт каллорий
+//                    workout.exerciseSet = exerciseSet
+//                    
+//                    user.addToWorkout(workout)
+//                }
             }
         }
         .onDisappear {

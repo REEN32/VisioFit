@@ -103,6 +103,8 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             var sholders: [CGPoint] = []
             var elbows: [CGPoint] = []
             var wrists: [CGPoint] = []
+            var knees: [CGPoint] = []
+            var rootLoc: CGPoint?
             for observation in observations {
                 let leftShoulder = try observation.recognizedPoint(.leftShoulder)
                 sholders.append(leftShoulder.location)
@@ -118,6 +120,14 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 wrists.append(leftWrist.location)
                 let rightWrist = try observation.recognizedPoint(.rightWrist)
                 wrists.append(rightWrist.location)
+                
+                let leftKnees = try observation.recognizedPoint(.leftKnee)
+                knees.append(leftKnees.location)
+                let rightKnees = try observation.recognizedPoint(.rightKnee)
+                knees.append(rightKnees.location)
+                
+                let root = try observation.recognizedPoint(.root)
+                rootLoc = root.location
             }
             
             
@@ -129,7 +139,11 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 
                 if Date().timeIntervalSince(self.lastTimeStap) > self.timeStap {
                     
-                    let pose = BodyPoseData(shoulders: sholders, elbows: elbows, wrists: wrists)
+                    let pose = BodyPoseData(shoulders: sholders,
+                                            elbows: elbows,
+                                            wrists: wrists,
+                                            knees: knees,
+                                            root: rootLoc)
                     
                     self.currentAnalyzer.analyze(pose: pose)
                     self.count = self.currentAnalyzer.count

@@ -6,7 +6,7 @@ class ExerciseAnalyzerFactory {
         case .squat:
             fatalError()
         case .plank:
-            fatalError()
+            return PlankAnalyzer()
         }
     }
 }
