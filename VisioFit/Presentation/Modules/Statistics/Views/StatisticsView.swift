@@ -1,8 +1,16 @@
 import SwiftUI
 
 struct StatisticsView: View {
-    @State private var timePeriod: TimePeriod = .week
+    @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
+    
+    @StateObject private var statisticViewModel = StatisticViewModel()
     @State private var showBasicChart: Bool = true
+    
+    private var workouts: Set<Workout> {
+        guard let user = users.first,
+              let workoutSet = user.workout as? Set<Workout> else { return [] }
+        return workoutSet
+    }
     
     var body: some View {
         NavigationStack {
@@ -17,20 +25,20 @@ struct StatisticsView: View {
                     }
                     .frame(maxWidth: .infinity)
                     HStack(spacing: 15) {
-                        SecondaryButton(label: "Нед", weight: .bold, selected: timePeriod == .week) {
-                            timePeriod = .week
+                        SecondaryButton(label: "Нед", weight: .bold, selected: statisticViewModel.timePeriod == .week) {
+                            statisticViewModel.timePeriod = .week
                         }
                         .frame(maxWidth: 100, maxHeight: 40)
-                        SecondaryButton(label: "Мес", weight: .bold, selected: timePeriod == .month) {
-                            timePeriod = .month
+                        SecondaryButton(label: "Мес", weight: .bold, selected: statisticViewModel.timePeriod == .month) {
+                            statisticViewModel.timePeriod = .month
                         }
                         .frame(maxWidth: 100, maxHeight: 40)
-                        SecondaryButton(label: "Год", weight: .bold, selected: timePeriod == .year) {
-                            timePeriod = .year
+                        SecondaryButton(label: "Год", weight: .bold, selected: statisticViewModel.timePeriod == .year) {
+                            statisticViewModel.timePeriod = .year
                         }
                         .frame(maxWidth: 100, maxHeight: 40)
-                        SecondaryButton(label: "Всё", weight: .bold, selected: timePeriod == .allTime) {
-                            timePeriod = .allTime
+                        SecondaryButton(label: "Всё", weight: .bold, selected: statisticViewModel.timePeriod == .allTime) {
+                            statisticViewModel.timePeriod = .allTime
                         }
                         .frame(maxWidth: 100, maxHeight: 40)
                     }
@@ -40,14 +48,14 @@ struct StatisticsView: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         HStack(spacing: 15) {
                             VStack(alignment: .leading, spacing: 0) {
-                                Text("87%")
+                                Text("\(statisticViewModel.averageAccuracyText)%")
                                     .orangeText(fontSize: 36)
                                 Text("Средняя точность")
                                     .accentDescription(fontSize: 16)
                                 
                                 Spacer()
                                 
-                                Text("+4% от прошлой недели")
+                                Text("\(statisticViewModel.accuracyChange)% от прошлой недели")
                                     .statisticsText(isPositive: true, fontSize: 15)
                             }
                             .padding(15)
@@ -56,14 +64,14 @@ struct StatisticsView: View {
                             .mainBlock()
                             
                             VStack(alignment: .leading, spacing: 0) {
-                                Text("264")
+                                Text(statisticViewModel.repeatCount)
                                     .headText(fontSize: 36)
                                 Text("Повторений")
                                     .accentDescription(fontSize: 16)
                                 
                                 Spacer(minLength: 0)
                                 
-                                Text("+46 от прошлой недели")
+                                Text("\(statisticViewModel.repeatChange) от прошлой недели")
                                     .statisticsText(isPositive: true, fontSize: 15)
                             }
                             .padding(15)
@@ -140,9 +148,11 @@ struct StatisticsView: View {
                 //            .padding(.horizontal, 20)
             }
         }
+        .onAppear {
+            statisticViewModel.rawWorkouts = self.workouts
+        }
+        .onChange(of: workouts) { _, newWorkouts in
+            statisticViewModel.rawWorkouts = newWorkouts
+        }
     }
-}
-
-#Preview {
-    StatisticsView()
 }

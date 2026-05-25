@@ -8,13 +8,9 @@ class AccountViewModel: ObservableObject {
         let workoutsSet = (workouts as? Set<Workout> ?? [])
         let filtredWorkoutsSet = workoutsSet.filter { $0.exerciseSet?.metricPoint?.quality != -1 }
         guard filtredWorkoutsSet.count != 0 else { return }
-        
         let accuracySum = filtredWorkoutsSet.reduce(0) { partialResult, workout in
             partialResult + (workout.exerciseSet?.metricPoint?.quality ?? 0)
         }
-        print("accuracySum: \(accuracySum)")
-        print("count: \(filtredWorkoutsSet.count)")
         self.averageAccuracy = Int(accuracySum / Double(filtredWorkoutsSet.count))
-        print("last: \(self.averageAccuracy ?? -10)")
     }
 }
