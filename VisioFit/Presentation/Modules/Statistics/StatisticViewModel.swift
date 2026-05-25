@@ -9,6 +9,33 @@ class StatisticViewModel: ObservableObject {
     @Published private(set) var repeatCount: String = "–"
     @Published private(set) var accuracyChange: String = "+0"
     @Published private(set) var repeatChange: String = "+0"
+    @Published private(set) var chartData: [Double] = []
+    @Published private(set) var accuracyDiff: String = "+0"
+    
+    @Published private(set) var pushupsReps: String = ""
+    @Published private(set) var squatReps: String = ""
+    @Published private(set) var plankReps: String = ""
+    
+    @Published private(set) var pushupsSession: String = ""
+    @Published private(set) var squatSession: String = ""
+    @Published private(set) var plankSession: String = ""
+    
+    @Published private(set) var pushupsAccuracy: String = ""
+    @Published private(set) var squatAccuracy: String = ""
+    @Published private(set) var plankAccuracy: String = ""
+    
+    var timePeriodString: String {
+        switch timePeriod {
+        case .week:
+            return "дням"
+        case .month:
+            return "неделям"
+        case .year:
+            return "месяцам"
+        case .allTime:
+            return "годам"
+        }
+    }
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -23,7 +50,6 @@ class StatisticViewModel: ObservableObject {
     private func recalculateStatistic(for workouts: Set<Workout>, in period: TimePeriod) {
         let filtredWorkout = filterLast(workouts , by: period)
         
-        
         let reps = calculateRepsSum(for: filtredWorkout)
         self.repeatCount = String(reps)
         
@@ -37,6 +63,8 @@ class StatisticViewModel: ObservableObject {
         let nilFiltredWorkout = filterNil(workouts)
         self.calculateAccuracyChange(for: nilFiltredWorkout, by: period)
         self.calculateRepeatChange(for: workouts, by: period)
+        self.setChartDate(for: workouts, by: period)
+        self.setExerciseInfo(for: workouts)
     }
     
     private func filterLast(_ rawWorkouts: Set<Workout>, by period: TimePeriod) -> Set<Workout> {
@@ -153,5 +181,102 @@ class StatisticViewModel: ObservableObject {
         } else {
             self.repeatChange = "+\(diff)"
         }
+    }
+    
+    private func setChartDate(for workouts: Set<Workout>, by period: TimePeriod) {
+        func average(_ arr: [Workout]) -> Double {
+            guard arr.count != 0 else { return 0 }
+            let sum = arr.reduce(0) { partialResult, workout in
+                partialResult + (workout.exerciseSet?.metricPoint?.quality ?? 0)
+            }
+            return sum / Double(arr.count)
+        }
+        
+        
+        let lastWorkoutsNil = filterLast(workouts, by: period)
+        let lastWorkouts = filterNil(lastWorkoutsNil)
+        let calendar = Calendar.current
+        
+        let component: Calendar.Component
+        switch period {
+        case .week:
+            component = .day
+        case .month:
+            component = .weekOfYear
+        case .year:
+            component = .month
+         case .allTime:
+            component = .year
+        }
+        
+        let groupedDictionary = Dictionary(grouping: lastWorkouts) { (workout) -> Date in
+            let workoutDate = workout.date ?? Date()
+                    
+            if let startOfInterval = calendar.dateInterval(of: component, for: workoutDate)?.start {
+                return startOfInterval
+            }
+            return calendar.startOfDay(for: workoutDate)
+        }
+        let sortedKeys = groupedDictionary.keys.sorted(by: <)
+        let sortedArrayOfArrays = sortedKeys.compactMap { date in
+            return groupedDictionary[date]
+        }
+        
+        var resultArray: [Double] = []
+        for arr in sortedArrayOfArrays {
+            resultArray.append((average(arr) * 100).rounded() / 100)
+        }
+        
+        var resultData: [Double] = []
+        switch period {
+        case .week:
+            resultData = Array(repeating: 0, count: 7)
+        case .month:
+            resultData = Array(repeating: 0, count: 4)
+        case .year:
+            resultData = Array(repeating: 0, count: 12)
+        case .allTime:
+            resultData = Array(repeating: 0, count: 4)
+        }
+        
+        var index = 0
+        for i in (resultData.count - resultArray.count)..<resultData.count {
+            resultData[i] = resultArray[index]
+            index += 1
+        }
+        self.chartData = resultData
+        
+        guard let last = resultData.popLast(), let beforeLast = resultData.popLast() else { self.accuracyDiff = "+0"; return }
+        let diff = ((last - beforeLast) * 100).rounded() / 100
+        if diff < 0 {
+            self.accuracyDiff = "\(diff)"
+        } else {
+            self.accuracyDiff = "+\(diff)"
+        }
+    }
+    
+    private func setExerciseInfo(for workouts: Set<Workout>) {
+        let dividedWorkouts = Dictionary(grouping: workouts) { workout in
+            return workout.exerciseSet?.trainingType
+        }
+        
+        self.plankSession = "\(dividedWorkouts[.plank]?.count ?? 0)"
+        self.pushupsSession = "\(dividedWorkouts[.pushup]?.count ?? 0)"
+        self.squatSession = "\(dividedWorkouts[.squat]?.count ?? 0)"
+        
+        self.plankReps = "\(calculateRepsSum(for: Set(dividedWorkouts[.plank] ?? [])))"
+        self.pushupsReps = "\(calculateRepsSum(for: Set(dividedWorkouts[.pushup] ?? [])))"
+        self.squatReps = "\(calculateRepsSum(for: Set(dividedWorkouts[.squat] ?? [])))"
+        
+        func setAccuracy(for workout: Set<Workout>, to variable: inout String) {
+            if let accuracy = calculateAverageAccuracy(for: workout) {
+                variable = "\(accuracy)"
+            } else {
+                variable = "–"
+            }
+        }
+        setAccuracy(for: filterNil(Set(dividedWorkouts[.plank] ?? [])), to: &self.plankAccuracy)
+        setAccuracy(for: filterNil(Set(dividedWorkouts[.pushup] ?? [])), to: &self.pushupsAccuracy)
+        setAccuracy(for: filterNil(Set(dividedWorkouts[.squat] ?? [])), to: &self.squatAccuracy)
     }
 }

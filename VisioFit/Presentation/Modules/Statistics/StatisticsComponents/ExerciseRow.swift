@@ -2,12 +2,12 @@ import SwiftUI
 
 struct ExerciseRow: View {
     let name: String
-    let desctiptionRepetitions: Int
+    let desctiptionRepetitions: String
     let isTimeCounting: Bool
-    let descriptionTraining: Int
-    let percent: Int
+    let descriptionTraining: String
+    let percent: String
     
-    init(name: String, desctiptionRepetitions: Int, isTimeCounting: Bool = false, descriptionTraining: Int, percent: Int) {
+    init(name: String, desctiptionRepetitions: String, isTimeCounting: Bool = false, descriptionTraining: String, percent: String) {
         self.name = name
         self.desctiptionRepetitions = desctiptionRepetitions
         self.isTimeCounting = isTimeCounting

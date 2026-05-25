@@ -84,24 +84,21 @@ struct StatisticsView: View {
                         
                         VStack {
                             HStack {
-                                Text("Точность по сессиям")
+                                Text("Точность по \(statisticViewModel.timePeriodString)")
                                     .accentDescription(fontSize: 20, weight: .bold)
                                 Spacer()
-                                Text("+12%")
+                                Text("\(statisticViewModel.accuracyDiff)%")
                                     .orangeText(fontSize: 26)
                             }
                             Button {
                                 showBasicChart.toggle()
                             } label: {
                                 if showBasicChart  {
-                                    BasicChart(data: [10, 20, 50, 20, 40, 60, 30])
-                                    // при нажатии месяц будет по неделям, год - по месяцам, всё - по годам
+                                    BasicChart(data: statisticViewModel.chartData)
                                 } else {
-                                    AccuracyChart(data: [10, 20, 50, 20, 40, 60, 30])
+                                    AccuracyChart(data: statisticViewModel.chartData)
                                 }
                             }
-                            //                            .frame(height: 140)
-                            
                         }
                         .padding(15)
                         .frame(maxWidth: .infinity, maxHeight: 200)
@@ -119,22 +116,22 @@ struct StatisticsView: View {
                             VStack(spacing: 15) {
                                 NavigationLink(destination: ExerciseView(exerciseName: "Отжимания")) {
                                     ExerciseRow(name: "Отжимания",
-                                                desctiptionRepetitions: 142,
-                                                descriptionTraining: 8,
-                                                percent: 84)
+                                                desctiptionRepetitions: statisticViewModel.pushupsReps,
+                                                descriptionTraining: statisticViewModel.pushupsSession,
+                                                percent: statisticViewModel.pushupsAccuracy)
                                 }
                                 NavigationLink(destination: ExerciseView(exerciseName: "Приседания")) {
                                     ExerciseRow(name: "Приседания",
-                                                desctiptionRepetitions: 235,
-                                                descriptionTraining: 12,
-                                                percent: 68)
+                                                desctiptionRepetitions: statisticViewModel.squatReps,
+                                                descriptionTraining: statisticViewModel.squatSession,
+                                                percent: statisticViewModel.squatAccuracy)
                                 }
                                 NavigationLink(destination: ExerciseView(exerciseName: "Планка")) {
                                     ExerciseRow(name: "Планка",
-                                                desctiptionRepetitions: 142,
+                                                desctiptionRepetitions: statisticViewModel.plankReps,
                                                 isTimeCounting: true,
-                                                descriptionTraining: 8,
-                                                percent: 90)
+                                                descriptionTraining: statisticViewModel.plankSession,
+                                                percent: statisticViewModel.plankAccuracy)
                                 }
                             }
                         }
@@ -145,7 +142,6 @@ struct StatisticsView: View {
                             .frame(height: 80)
                     }
                 }
-                //            .padding(.horizontal, 20)
             }
         }
         .onAppear {
