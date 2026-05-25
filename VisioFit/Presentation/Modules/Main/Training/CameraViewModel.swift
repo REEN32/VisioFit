@@ -5,7 +5,7 @@ import Foundation
 
 class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     @Published var session = AVCaptureSession()
-    @Published var accuracy: Int = 100
+    @Published var accuracy: Int?
 //    @Published var pointsPosition: [CGPoint] = [] Для отрисовки скелета
     @Published var count: Int = 0
     @Published var badCount: Int = 0
@@ -163,7 +163,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     
     func reset() {
         self.count = 0
-        self.accuracy = 100
+        self.accuracy = nil
         self.currentAnalyzer.reset()
     }
     

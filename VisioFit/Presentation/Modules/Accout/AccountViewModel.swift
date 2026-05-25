@@ -5,13 +5,16 @@ class AccountViewModel: ObservableObject {
     @Published var averageAccuracy: Int?
     
     func calculateAverageAccuracy(from workouts: NSSet) {
-        print("in function")
-        let accuracySum = (workouts as? Set<Workout> ?? []).reduce(0) { partialResult, workout in
+        let workoutsSet = (workouts as? Set<Workout> ?? [])
+        let filtredWorkoutsSet = workoutsSet.filter { $0.exerciseSet?.metricPoint?.quality != -1 }
+        guard filtredWorkoutsSet.count != 0 else { return }
+        
+        let accuracySum = filtredWorkoutsSet.reduce(0) { partialResult, workout in
             partialResult + (workout.exerciseSet?.metricPoint?.quality ?? 0)
         }
-        print("after calculation")
-        print("Debug accuracySum: \(accuracySum)")
-        print("Debug count: \(workouts.count)")
-        self.averageAccuracy = Int(accuracySum / Double(workouts.count))
+        print("accuracySum: \(accuracySum)")
+        print("count: \(filtredWorkoutsSet.count)")
+        self.averageAccuracy = Int(accuracySum / Double(filtredWorkoutsSet.count))
+        print("last: \(self.averageAccuracy ?? -10)")
     }
 }

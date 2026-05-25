@@ -32,7 +32,7 @@ struct AccoutContentView: View {
     
     @State private var activeParam: ActiveParam?
     
-    let accountViewModel: AccountViewModel
+    @StateObject var accountViewModel: AccountViewModel
     
     var body: some View {
         NavigationStack {
@@ -220,9 +220,7 @@ struct AccoutContentView: View {
             }
         }
         .onAppear {
-            print("Before appear")
             accountViewModel.calculateAverageAccuracy(from: user.workout ?? [])
-            print("after appear")
         }
     }
 }

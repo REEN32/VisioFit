@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct TrainingHandleView: View {
-    @State private var count: Int = 0
     @State private var countString: String = "0"
     
     @Binding var trainingScreen: TrainingScreen
@@ -35,7 +34,8 @@ struct TrainingHandleView: View {
                             Text("повторений")
                                 .headText(fontSize: 22, weight: .medium)
                         }
-                        RepeatCountLines(count: count, target: 12)
+                        RepeatCountLines(count: trainingViewModel.reps, target: 12)
+                        // тут ещё сделать target на динамичекий !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     }
                     .padding(.horizontal, 15)
                     .padding(.bottom, 20)
@@ -43,8 +43,8 @@ struct TrainingHandleView: View {
                     
                     VStack(alignment: .center, spacing: 30) {
                         Button {
-                            count += 1
-                            countString = String(count)
+                            trainingViewModel.reps += 1
+                            countString = String(trainingViewModel.reps)
                         } label: {
                             Image(systemName: "arrowshape.up.fill")
                                 .padding(20)
@@ -66,9 +66,9 @@ struct TrainingHandleView: View {
                             .headText(fontSize: 60)
                             
                         Button {
-                            if count > 0 {
-                                count -= 1
-                                countString = String(count)
+                            if trainingViewModel.reps > 0 {
+                                trainingViewModel.reps -= 1
+                                countString = String(trainingViewModel.reps)
                             }
                         } label: {
                             Image(systemName: "arrowshape.down.fill")

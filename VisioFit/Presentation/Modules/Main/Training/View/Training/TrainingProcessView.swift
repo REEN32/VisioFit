@@ -68,9 +68,14 @@ struct TrainingProcessView: View {
                     
                     VStack(spacing: 15) {
                         VStack(spacing: 10) {
-                            Text("\(trainingViewModel.currentAccuracy)% точности")
-                                .accuracyText(value: Double(trainingViewModel.currentAccuracy))
-                            AccuracyBar(percent: Double(trainingViewModel.currentAccuracy))
+                            if let accuracy = trainingViewModel.currentAccuracy {
+                                Text("\(accuracy)% точности")
+                                    .accuracyText(value: Double(accuracy))
+                            } else {
+                                Text("–% точности")
+                                    .accuracyText(value: 0)
+                            }
+                            AccuracyBar(percent: Double(trainingViewModel.currentAccuracy ?? 0))
                                 .frame(height: 10)
                         }
                         .padding(15)
@@ -132,9 +137,14 @@ struct TrainingProcessView: View {
                 
                 cameraViewModel.reset()
                 cameraViewModel.stopPrepareTime()
-                trainingViewModel.startTimer()
-                trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
+                self.beginTraining()
             }
         }
+    }
+    
+    private func beginTraining() {
+        trainingViewModel.startTimer()
+        trainingViewModel.currentAccuracy = 100
+        trainingViewModel.addApproach(workoutSet: workoutSet, context: context)
     }
 }

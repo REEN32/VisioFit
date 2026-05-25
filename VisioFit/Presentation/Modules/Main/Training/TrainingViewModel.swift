@@ -8,7 +8,7 @@ class TrainingViewModel: ObservableObject {
     var badReps: Int = 0
     var goodReps: Int = 0
     var perfectReps: Int = 0
-    @Published var currentAccuracy: Int = 100
+    @Published var currentAccuracy: Int?
     @Published var accuracyArray: [Double] = []
     @Published var trainingTime: TimeInterval = 0
     @Published var restTime: TimeInterval = 20
@@ -39,6 +39,7 @@ class TrainingViewModel: ObservableObject {
         self.cameraVM = cameraVM
         
         cameraVM.$accuracy
+            .compactMap { $0 }
             .sink { [weak self] accuracy in
                 self?.currentAccuracy = accuracy
                 self?.accuracyArray.append(Double(accuracy))
@@ -72,6 +73,7 @@ class TrainingViewModel: ObservableObject {
     
     func startTimer() {
         startTimerDate = Date()
+        self.accuracyArray.removeAll()
         
         timer = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()

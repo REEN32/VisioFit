@@ -55,8 +55,13 @@ struct TrainingCompleteView: View {
                                         .accentDescription(fontSize: 14)
                                 }
                                 VStack {
-                                    Text("\(trainingViewModel.perfectReps)")
-                                        .statisticsText(isPositive: true, fontSize: 26)
+                                    if trainingViewModel.perfectReps != 0 {
+                                        Text("\(trainingViewModel.perfectReps)")
+                                            .statisticsText(isPositive: true, fontSize: 26)
+                                    } else {
+                                        Text("–")
+                                            .statisticsText(isPositive: true, fontSize: 26)
+                                    }
                                     Text("идеальных")
                                         .accentDescription(fontSize: 14)
                                 }
@@ -72,13 +77,20 @@ struct TrainingCompleteView: View {
                             .mainBlock()
                         }
                         
+                        
                         VStack() {
                             HStack {
                                 Text("качество по повторениям")
                                     .blockLabel()
                                 Spacer()
                             }
-                            AccuracyChart(data: trainingViewModel.accuracyArray)
+                            if !trainingViewModel.accuracyArray.isEmpty {
+                                AccuracyChart(data: trainingViewModel.accuracyArray)
+                            } else {
+                                Text("Купите подписку для более качественного анализа")
+                                    .accentDescription()
+                                    .padding(.top, 5)
+                            }
                         }
                         .padding(15)
                         .frame(maxWidth: .infinity)
@@ -86,8 +98,13 @@ struct TrainingCompleteView: View {
                         
                         HStack(spacing: 15) {
                             VStack {
-                                Text("\(trainingViewModel.perfectReps)")
-                                    .statisticsText(isPositive: true, fontSize: 26)
+                                if trainingViewModel.perfectReps != 0 {
+                                    Text("\(trainingViewModel.perfectReps)")
+                                        .statisticsText(isPositive: true, fontSize: 26)
+                                } else {
+                                    Text("–")
+                                        .statisticsText(isPositive: true, fontSize: 26)
+                                }
                                 Text("идеальных")
                                     .accentDescription(fontSize: 14)
                             }
@@ -95,8 +112,13 @@ struct TrainingCompleteView: View {
                             .frame(maxWidth: .infinity)
                             .greenTintBlock()
                             VStack {
-                                Text("\(trainingViewModel.goodReps)")
-                                    .orangeText(fontSize: 26)
+                                if trainingViewModel.goodReps != 0 {
+                                    Text("\(trainingViewModel.goodReps)")
+                                        .orangeText(fontSize: 26)
+                                } else {
+                                    Text("–")
+                                        .orangeText(fontSize: 26)
+                                }
                                 Text("хороших")
                                     .accentDescription(fontSize: 14)
                             }
@@ -104,8 +126,13 @@ struct TrainingCompleteView: View {
                             .frame(maxWidth: .infinity)
                             .orangeTintBlock()
                             VStack {
-                                Text("\(trainingViewModel.badReps)")
-                                    .statisticsText(isPositive: false, fontSize: 26)
+                                if trainingViewModel.badReps != 0 {
+                                    Text("\(trainingViewModel.badReps)")
+                                        .statisticsText(isPositive: false, fontSize: 26)
+                                } else {
+                                    Text("–")
+                                        .statisticsText(isPositive: false, fontSize: 26)
+                                }
                                 Text("плохих")
                                     .accentDescription(fontSize: 14)
                             }
@@ -150,6 +177,8 @@ struct TrainingCompleteView: View {
                     let metric = MetricPoint(context: context)
                     if trainingViewModel.averageAccuracy != nil {
                         metric.quality = Double(trainingViewModel.averageAccuracy!)
+                    } else {
+                        metric.quality = -1
                     }
 
                     let exerciseSet = ExerciseSet(context: context)

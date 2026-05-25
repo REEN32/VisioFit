@@ -1,7 +1,7 @@
 import Foundation
 
 class PushUpAnalyzer: ExerciseAnalyzer {
-    private(set) var accuracy: Int = 100
+    private(set) var accuracy: Int?
     private(set) var count: Int = 0
     private(set) var badCount: Int = 0
     private(set) var goodCount: Int = 0
@@ -41,6 +41,7 @@ class PushUpAnalyzer: ExerciseAnalyzer {
         if (Double(self.lastAngle.left + self.lastAngle.right) / 2) < 100 && isPushUp {
             self.isPushUp = false
             self.count += 1
+            guard let accuracy = self.accuracy else { return }
             switch accuracy {
             case 0...60:
                 self.badCount += 1
@@ -94,6 +95,6 @@ class PushUpAnalyzer: ExerciseAnalyzer {
 
     func reset() {
         self.count = 0
-        self.accuracy = 100
+        self.accuracy = nil
     }
 }
