@@ -6,7 +6,7 @@ struct BasicChart: View {
     private var multiplyIndex: [Double] {
         let maxValue = data.max() ?? 1
         guard maxValue > 0 else { return Array(repeating: 0, count: data.count) }
-        return data.map { Double($0) / Double(maxValue) }
+        return data.map { max(Double($0) / Double(maxValue), 0.03) }
     }
     
     var body: some View {
