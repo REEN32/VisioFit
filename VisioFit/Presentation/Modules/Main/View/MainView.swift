@@ -1,18 +1,52 @@
 import SwiftUI
 
-fileprivate enum ChartType: String {
-    case kkal = "килокалории"
-    case steps = "шаги"
-    case range = "киллометры"
-    case time = "время тренировок"
+struct MainView: View {
+    @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
+    
+    @StateObject private var mainViewModel: MainViewModel = MainViewModel()
+    @StateObject private var healthViewModel: HealthViewModel = HealthViewModel()
+    
+    private var workouts: Set<Workout> {
+        guard let user = users.first,
+              let workoutSet = user.workout as? Set<Workout> else { return [] }
+        return workoutSet
+    }
+    
+    var body: some View {
+        if let user = users.first {
+            MainContentView(user: user, mainViewModel: mainViewModel, healthViewModel: healthViewModel)
+                .onAppear {
+                    mainViewModel.rawWorkouts = self.workouts
+                    mainViewModel.steps = self.healthViewModel.stepsHistory
+                    mainViewModel.distance = self.healthViewModel.distanceHistory
+                    mainViewModel.calories = self.healthViewModel.caloriesHistory
+                }
+                .onChange(of: workouts) { _, newWorkouts in
+                    mainViewModel.rawWorkouts = newWorkouts
+                }
+                .onChange(of: healthViewModel.stepsHistory) { _, newSteps in
+                    mainViewModel.steps = newSteps
+                }
+                .onChange(of: healthViewModel.distanceHistory) { _, newDistance in
+                    mainViewModel.distance = newDistance
+                }
+                .onChange(of: healthViewModel.caloriesHistory) { _, newCalories in
+                    mainViewModel.calories = newCalories
+                }
+        } else {
+            VStack {
+                Text("Ошибка загрузки")
+                    .headText()
+            }
+        }
+    }
 }
 
-struct MainView: View {
-    @State private var chartType: ChartType = .kkal
-    @State private var data: [Double] = []
-    private var chartTitle: String {
-        "неделя (\(chartType.rawValue))"
-    }
+struct MainContentView: View {
+    
+    @ObservedObject var user: User
+    @ObservedObject var mainViewModel: MainViewModel
+    @ObservedObject var healthViewModel: HealthViewModel
     
     @State private var toTraining: Bool = false
     
@@ -26,17 +60,17 @@ struct MainView: View {
                     VStack {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("Пятница, 10 апреля")
+                                Text("\(Date().todayDate)")
                                     .accentDescription()
-                                Text("Привет, Герман!")
+                                Text("Привет, \(user.name ?? "")!")
                                     .headText()
                             }
                             Spacer()
                         }
                         
                         Button {
-                            chartType = .kkal
-                            CoreDataManager.shared.deleteUser() // !!!!!!!!!
+                            mainViewModel.chartType = .kkal
+//                            CoreDataManager.shared.deleteUser() // !!!!!!!!!
                         } label: {
                             VStack(alignment: .leading, spacing: 0) {
                                 HStack {
@@ -44,14 +78,14 @@ struct MainView: View {
                                         .blockLabel()
                                     Spacer()
                                 }
-                                Text("634")
+                                Text("\(healthViewModel.calories.formatted())")
                                     .orangeText(fontSize: 46)
-                                Text("ккал из 1 000")
+                                Text("ккал из \(user.kkalGoal)")
                                     .accentDescription()
-                                DefaultProgressBar(actualValue: 634, maxValue: 1000)
+                                DefaultProgressBar(actualValue: mainViewModel.calculatePercentCallories(actualCal: healthViewModel.calories, for: user), maxValue: Double(user.kkalGoal))
                                     .frame(maxWidth: .infinity, minHeight: 10, maxHeight: 10)
                                     .padding(.vertical, 5)
-                                Text("63% цели")
+                                Text("\(mainViewModel.calculatePercentCallories(actualCal: healthViewModel.calories, for: user).formatted())% цели")
                                     .orangeText()
                             }
                         }
@@ -73,16 +107,16 @@ struct MainView: View {
                         
                         HStack(spacing: 15) {
                             Group {
-                                statBlock(iconName: "shoe", value: 8360, description: "шагов") {
-                                    chartType = .steps
+                                statBlock(iconName: "shoe", value: healthViewModel.steps, description: "шагов") {
+                                    mainViewModel.chartType = .steps
                                 }
-                                statBlock(iconName: "figure.step.training", value: 5.3, description: "км") {
-                                    CoreDataManager.shared.getWorkouts()
-                                    chartType = .range
+                                statBlock(iconName: "figure.step.training", value: healthViewModel.distance, description: "км") {
+//                                    CoreDataManager.shared.getWorkouts()
+                                    mainViewModel.chartType = .range
                                 }
-                                statBlock(iconName: "clock", value: 45, description: "мин трен") {
-                                    CoreDataManager.shared.getWorkoutsAccuracy()
-                                    chartType = .time
+                                statBlock(iconName: "clock", value: mainViewModel.todayWorkoutsDuration, description: "сек трен") {
+//                                    CoreDataManager.shared.getWorkoutsAccuracy()
+                                    mainViewModel.chartType = .time
                                 }
                             }
                             .frame(minWidth: 30, minHeight: 115)
@@ -95,12 +129,12 @@ struct MainView: View {
                         
                         VStack(alignment: .leading) {
                             HStack {
-                                Text(chartTitle)
+                                Text(mainViewModel.chartTitle)
                                     .blockLabel()
                                 Spacer()
                             }
                             
-                            BasicChart(data: data)
+                            BasicChart(data: mainViewModel.chartData)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.top, 15)
@@ -129,13 +163,10 @@ struct MainView: View {
                     Color.clear
                         .frame(height: 80)
                 }
-                .onAppear {
-                    setData()
-                }
-                .onChange(of: chartType) {
-                    setData()
-                }
             }
+        }
+        .onAppear {
+            healthViewModel.authorizeAndLoad()
         }
     }
     
@@ -158,22 +189,4 @@ struct MainView: View {
             }
         }
     }
-    
-    private func setData() {
-        switch chartType {
-        case .kkal:
-            data = [1204, 3021, 2222, 2000, 1234, 3321, 1211]
-        case .steps:
-            data = [8000, 11002, 15321, 8340, 12332, 100, 15000]
-        case .range:
-            data = [7.5, 10.6, 14.23, 7, 10.7, 0.5, 15]
-        case .time:
-            data = [47, 60, 12, 32, 63, 23, 52]
-
-        }
-    }
-}
-
-#Preview {
-    MainView()
 }
