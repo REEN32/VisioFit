@@ -37,6 +37,19 @@ class StatisticViewModel: ObservableObject {
         }
     }
     
+    var timeAverageString: String {
+        switch timePeriod {
+        case .week:
+            return "прошлой недели"
+        case .month:
+            return "прошлого месяца"
+        case .year:
+            return "прошлого года"
+        case .allTime:
+            return "прошлой недели"
+        }
+    }
+    
     private var cancellables = Set<AnyCancellable>()
     
     init() {
@@ -64,7 +77,7 @@ class StatisticViewModel: ObservableObject {
         self.calculateAccuracyChange(for: nilFiltredWorkout, by: period)
         self.calculateRepeatChange(for: workouts, by: period)
         self.setChartDate(for: workouts, by: period)
-        self.setExerciseInfo(for: workouts)
+        self.setExerciseInfo(for: workouts, by: period)
     }
     
     private func filterLast(_ rawWorkouts: Set<Workout>, by period: TimePeriod) -> Set<Workout> {
@@ -143,7 +156,7 @@ class StatisticViewModel: ObservableObject {
             partialResult + (workout.exerciseSet?.metricPoint?.quality ?? 0)
         }
         if workouts.count != 0 {
-            resultAccuracy = Int(accuracySum / Double(workouts.count))
+            resultAccuracy = Int((accuracySum / Double(workouts.count)).rounded())
         }
         return resultAccuracy
     }
@@ -255,18 +268,22 @@ class StatisticViewModel: ObservableObject {
         }
     }
     
-    private func setExerciseInfo(for workouts: Set<Workout>) {
+    private func setExerciseInfo(for workouts: Set<Workout>, by period: TimePeriod) {
         let dividedWorkouts = Dictionary(grouping: workouts) { workout in
             return workout.exerciseSet?.trainingType
         }
         
-        self.plankSession = "\(dividedWorkouts[.plank]?.count ?? 0)"
-        self.pushupsSession = "\(dividedWorkouts[.pushup]?.count ?? 0)"
-        self.squatSession = "\(dividedWorkouts[.squat]?.count ?? 0)"
+        let timePlank = self.filterLast(Set(dividedWorkouts[.plank] ?? []), by: period)
+        let timePushup = self.filterLast(Set(dividedWorkouts[.pushup] ?? []), by: period)
+        let timeSquat = self.filterLast(Set(dividedWorkouts[.squat] ?? []), by: period)
         
-        self.plankReps = "\(calculateRepsSum(for: Set(dividedWorkouts[.plank] ?? [])))"
-        self.pushupsReps = "\(calculateRepsSum(for: Set(dividedWorkouts[.pushup] ?? [])))"
-        self.squatReps = "\(calculateRepsSum(for: Set(dividedWorkouts[.squat] ?? [])))"
+        self.plankSession = "\(timePlank.count)"
+        self.pushupsSession = "\(timePushup.count)"
+        self.squatSession = "\(timeSquat.count)"
+        
+        self.plankReps = "\(calculateRepsSum(for: timePlank))"
+        self.pushupsReps = "\(calculateRepsSum(for: timePushup))"
+        self.squatReps = "\(calculateRepsSum(for: timeSquat))"
         
         func setAccuracy(for workout: Set<Workout>, to variable: inout String) {
             if let accuracy = calculateAverageAccuracy(for: workout) {
@@ -275,8 +292,8 @@ class StatisticViewModel: ObservableObject {
                 variable = "–"
             }
         }
-        setAccuracy(for: filterNil(Set(dividedWorkouts[.plank] ?? [])), to: &self.plankAccuracy)
-        setAccuracy(for: filterNil(Set(dividedWorkouts[.pushup] ?? [])), to: &self.pushupsAccuracy)
-        setAccuracy(for: filterNil(Set(dividedWorkouts[.squat] ?? [])), to: &self.squatAccuracy)
+        setAccuracy(for: filterNil(timePlank), to: &self.plankAccuracy)
+        setAccuracy(for: filterNil(timePushup), to: &self.pushupsAccuracy)
+        setAccuracy(for: filterNil(timeSquat), to: &self.squatAccuracy)
     }
 }

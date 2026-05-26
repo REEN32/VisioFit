@@ -11,6 +11,6 @@ class AccountViewModel: ObservableObject {
         let accuracySum = filtredWorkoutsSet.reduce(0) { partialResult, workout in
             partialResult + (workout.exerciseSet?.metricPoint?.quality ?? 0)
         }
-        self.averageAccuracy = Int(accuracySum / Double(filtredWorkoutsSet.count))
+        self.averageAccuracy = Int((accuracySum / Double(filtredWorkoutsSet.count)).rounded())
     }
 }

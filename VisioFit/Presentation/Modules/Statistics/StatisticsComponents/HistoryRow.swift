@@ -20,13 +20,18 @@ struct HistoryRow: View {
             VStack(alignment: .leading) {
                 Text(date)
                     .headText(fontSize: 20, weight: .bold)
-                Text("\(desctiptionRepetitions) \(isTimeCounting ? "мин" : "повторений") • \(time) мин")
+                Text("\(desctiptionRepetitions) \(isTimeCounting ? "cек" : "повторений") • \(time) мин")
                     .accentDescription(fontSize: 16)
             }
             Spacer()
             VStack {
-                Text("\(percent)%")
-                    .orangeText()
+                if percent < 0 {
+                    Text("–%")
+                        .orangeText()
+                } else {
+                    Text("\(percent)%")
+                        .orangeText()
+                }
             }
         }
         .padding(.vertical, 10)
@@ -34,8 +39,4 @@ struct HistoryRow: View {
         .frame(maxWidth: .infinity)
         .mainBlock()
     }
-}
-
-#Preview {
-    HistoryRow(date: "27 ноя, Пн • 14:00", desctiptionRepetitions: 53, time: "4:32", percent: 84)
 }

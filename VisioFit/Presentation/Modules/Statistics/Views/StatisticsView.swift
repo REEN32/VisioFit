@@ -55,7 +55,7 @@ struct StatisticsView: View {
                                 
                                 Spacer()
                                 
-                                Text("\(statisticViewModel.accuracyChange)% от прошлой недели")
+                                Text("\(statisticViewModel.accuracyChange)% от \(statisticViewModel.timeAverageString)")
                                     .statisticsText(isPositive: true, fontSize: 15)
                             }
                             .padding(15)
@@ -71,7 +71,7 @@ struct StatisticsView: View {
                                 
                                 Spacer(minLength: 0)
                                 
-                                Text("\(statisticViewModel.repeatChange) от прошлой недели")
+                                Text("\(statisticViewModel.repeatChange) от \(statisticViewModel.timeAverageString)")
                                     .statisticsText(isPositive: true, fontSize: 15)
                             }
                             .padding(15)

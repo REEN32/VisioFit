@@ -59,9 +59,9 @@ struct ExerciseView: View {
                         showBasicChart.toggle()
                     } label: {
                         if showBasicChart {
-                            BasicChart(data: [1, 2, 3, 4, 5])
+                            BasicChart(data: exercisesViewModel.chartData)
                         } else {
-                            AccuracyChart(data: [1, 2, 3, 4, 5])
+                            AccuracyChart(data: exercisesViewModel.chartData)
                         }
                     }
                     .padding(15)
@@ -77,10 +77,18 @@ struct ExerciseView: View {
                     }
                     VStack(spacing: 15) {
                         ForEach(exercisesViewModel.getHistoryWorkouts(), id: \.id) { workout in
-                            HistoryRow(date: workout.date?.workoutDate ?? "",
-                                       desctiptionRepetitions: Int(workout.exerciseSet?.count ?? 0),
-                                       time: workout.duration.workoutTime,
-                                       percent: Int(workout.exerciseSet?.metricPoint?.quality ?? 0))
+                            if workout.exerciseSet?.trainingType == .plank {
+                                HistoryRow(date: workout.date?.workoutDate ?? "",
+                                           desctiptionRepetitions: Int(workout.exerciseSet?.count ?? 0),
+                                           isTimeCounting: true,
+                                           time: workout.duration.workoutTime,
+                                           percent: Int(workout.exerciseSet?.metricPoint?.quality ?? 0))
+                            } else {
+                                HistoryRow(date: workout.date?.workoutDate ?? "",
+                                           desctiptionRepetitions: Int(workout.exerciseSet?.count ?? 0),
+                                           time: workout.duration.workoutTime,
+                                           percent: Int(workout.exerciseSet?.metricPoint?.quality ?? 0))
+                            }
                         }
                     }
                 }
