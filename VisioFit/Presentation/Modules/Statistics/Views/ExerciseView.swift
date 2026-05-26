@@ -1,17 +1,11 @@
 import SwiftUI
 
-enum Stats {
-    case count
-    case session
-    case quality
-}
-
 struct ExerciseView: View {
     let exerciseName: String
-    
-    @State private var selectedStat: Stats = .count
-    @State private var timePeriod: TimePeriod = .week
     @State private var showBasicChart: Bool = true
+    let workouts: Set<Workout>
+    
+    @StateObject var exercisesViewModel: ExerciseViewModel
     
     var body: some View {
         ZStack {
@@ -21,14 +15,14 @@ struct ExerciseView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 15) {
                         Group {
-                            SecondaryButton(label: "Повторения", weight: .bold, selected: selectedStat == .count) {
-                                selectedStat = .count
+                            SecondaryButton(label: "Повторения", weight: .bold, selected: exercisesViewModel.chartType == .rep) {
+                                exercisesViewModel.chartType = .rep
                             }
-                            SecondaryButton(label: "Сессии", weight: .bold, selected: selectedStat == .session) {
-                                selectedStat = .session
+                            SecondaryButton(label: "Сессии", weight: .bold, selected: exercisesViewModel.chartType == .session) {
+                                exercisesViewModel.chartType = .session
                             }
-                            SecondaryButton(label: "Точность", weight: .bold, selected: selectedStat == .quality) {
-                                selectedStat = .quality
+                            SecondaryButton(label: "Точность", weight: .bold, selected: exercisesViewModel.chartType == .accuracy) {
+                                exercisesViewModel.chartType = .accuracy
                             }
                         }
                         .frame(minWidth: 100)
@@ -41,17 +35,17 @@ struct ExerciseView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
                             Group {
-                                SecondaryButton(label: "Нед", weight: .bold, selected: timePeriod == .week) {
-                                    timePeriod = .week
+                                SecondaryButton(label: "Нед", weight: .bold, selected: exercisesViewModel.timePeriod == .week) {
+                                    exercisesViewModel.timePeriod = .week
                                 }
-                                SecondaryButton(label: "Мес", weight: .bold, selected: timePeriod == .month) {
-                                    timePeriod = .month
+                                SecondaryButton(label: "Мес", weight: .bold, selected: exercisesViewModel.timePeriod == .month) {
+                                    exercisesViewModel.timePeriod = .month
                                 }
-                                SecondaryButton(label: "Год", weight: .bold, selected: timePeriod == .year) {
-                                    timePeriod = .year
+                                SecondaryButton(label: "Год", weight: .bold, selected: exercisesViewModel.timePeriod == .year) {
+                                    exercisesViewModel.timePeriod = .year
                                 }
-                                SecondaryButton(label: "Всё", weight: .bold, selected: timePeriod == .allTime) {
-                                    timePeriod = .allTime
+                                SecondaryButton(label: "Всё", weight: .bold, selected: exercisesViewModel.timePeriod == .allTime) {
+                                    exercisesViewModel.timePeriod = .allTime
                                 }
                             }
                             .frame(minWidth: 100)
@@ -75,7 +69,6 @@ struct ExerciseView: View {
                 .mainBlock()
                 .padding(.horizontal, 20)
                 .padding(.top, 15)
-                Spacer()
                 VStack(spacing: 15) {
                     HStack {
                         Text("Последние сессии")
@@ -83,15 +76,17 @@ struct ExerciseView: View {
                         Spacer()
                     }
                     VStack(spacing: 15) {
-                        HistoryRow(date: "27 ноя, Пн • 14:00", desctiptionRepetitions: 53, time: "4:32", percent: 84)
-                        HistoryRow(date: "27 ноя, Пн • 14:00", desctiptionRepetitions: 53, time: "4:32", percent: 84)
-                        HistoryRow(date: "27 ноя, Пн • 14:00", desctiptionRepetitions: 53, time: "4:32", percent: 84)
-                        HistoryRow(date: "27 ноя, Пн • 14:00", desctiptionRepetitions: 53, time: "4:32", percent: 84)
+                        ForEach(exercisesViewModel.getHistoryWorkouts(), id: \.id) { workout in
+                            HistoryRow(date: workout.date?.workoutDate ?? "",
+                                       desctiptionRepetitions: Int(workout.exerciseSet?.count ?? 0),
+                                       time: workout.duration.workoutTime,
+                                       percent: Int(workout.exerciseSet?.metricPoint?.quality ?? 0))
+                        }
                     }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 15)
-                
+                Spacer()
                 Color.clear
                     .frame(height: 80)
             }
@@ -105,9 +100,8 @@ struct ExerciseView: View {
                     .textCase(.uppercase)
             }
         }
+        .onChange(of: workouts) { _, newWorkouts in
+            exercisesViewModel.rawWorkouts = newWorkouts
+        }
     }
-}
-
-#Preview {
-    ExerciseView(exerciseName: "Отжимания")
 }

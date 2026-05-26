@@ -114,22 +114,33 @@ struct StatisticsView: View {
                             }
                             
                             VStack(spacing: 15) {
-                                NavigationLink(destination: ExerciseView(exerciseName: "Отжимания")) {
+                                NavigationLink(destination: {
+                                    let vm = ExerciseViewModel(trainingType: .pushup)
+                                    vm.rawWorkouts = self.workouts
+                                    return ExerciseView(exerciseName: "Отжимания", workouts: self.workouts, exercisesViewModel: vm)
+                                }()) {
                                     ExerciseRow(name: "Отжимания",
                                                 desctiptionRepetitions: statisticViewModel.pushupsReps,
                                                 descriptionTraining: statisticViewModel.pushupsSession,
                                                 percent: statisticViewModel.pushupsAccuracy)
                                 }
-                                NavigationLink(destination: ExerciseView(exerciseName: "Приседания")) {
+                                NavigationLink(destination: {
+                                    let vm = ExerciseViewModel(trainingType: .squat)
+                                    vm.rawWorkouts = self.workouts
+                                    return ExerciseView(exerciseName: "Приседания", workouts: self.workouts, exercisesViewModel: vm)
+                                }()) {
                                     ExerciseRow(name: "Приседания",
                                                 desctiptionRepetitions: statisticViewModel.squatReps,
                                                 descriptionTraining: statisticViewModel.squatSession,
                                                 percent: statisticViewModel.squatAccuracy)
                                 }
-                                NavigationLink(destination: ExerciseView(exerciseName: "Планка")) {
+                                NavigationLink(destination: {
+                                    let vm = ExerciseViewModel(trainingType: .plank)
+                                    vm.rawWorkouts = self.workouts
+                                    return ExerciseView(exerciseName: "Планка", workouts: self.workouts, exercisesViewModel: vm)
+                                }()) {
                                     ExerciseRow(name: "Планка",
                                                 desctiptionRepetitions: statisticViewModel.plankReps,
-                                                isTimeCounting: true,
                                                 descriptionTraining: statisticViewModel.plankSession,
                                                 percent: statisticViewModel.plankAccuracy)
                                 }
