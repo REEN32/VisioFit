@@ -63,7 +63,8 @@ class StatisticViewModel: ObservableObject {
     private func recalculateStatistic(for workouts: Set<Workout>, in period: TimePeriod) {
         let filtredWorkout = filterLast(workouts , by: period)
         
-        let reps = calculateRepsSum(for: filtredWorkout)
+        let withoutTimeWorkout = filtredWorkout.filter { $0.exerciseSet?.trainingType != .plank }
+        let reps = calculateRepsSum(for: withoutTimeWorkout)
         self.repeatCount = String(reps)
         
         let filtredWorkoutWithoutNil = filterNil(filtredWorkout)
@@ -75,7 +76,7 @@ class StatisticViewModel: ObservableObject {
 
         let nilFiltredWorkout = filterNil(workouts)
         self.calculateAccuracyChange(for: nilFiltredWorkout, by: period)
-        self.calculateRepeatChange(for: workouts, by: period)
+        self.calculateRepeatChange(for: withoutTimeWorkout, by: period)
         self.setChartDate(for: workouts, by: period)
         self.setExerciseInfo(for: workouts, by: period)
     }
