@@ -110,6 +110,6 @@ class MainViewModel: ObservableObject {
     }
     
     func calculatePercentCallories(actualCal cal: Double, for user: User) -> Double {
-        return min(((cal / Double(user.kkalGoal))), 100)
+        return min(((cal / Double(user.kkalGoal))) * 100, 100)
     }
 }

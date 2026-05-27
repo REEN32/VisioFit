@@ -43,6 +43,7 @@
     <entity name="WorkoutSet" representedClassName="WorkoutSet" syncable="YES" codeGenerationType="class">
         <attribute name="approach" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="completedApproach" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="givenExp" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="image" attributeType="String"/>
         <attribute name="isTime" attributeType="Boolean" usesScalarValueType="YES"/>

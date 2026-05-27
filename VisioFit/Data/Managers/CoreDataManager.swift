@@ -35,6 +35,7 @@ class CoreDataManager: ObservableObject {
             pushups.isTime = false
             pushups.completedApproach = 0
             pushups.requirementReps = 12
+            pushups.givenExp = 5
             
             let plank = WorkoutSet(context: context)
             plank.id = UUID()
@@ -44,6 +45,7 @@ class CoreDataManager: ObservableObject {
             plank.isTime = true
             plank.completedApproach = 0
             plank.requirementReps = 30
+            plank.givenExp = 1
             
             let squats = WorkoutSet(context: context)
             squats.id = UUID()
@@ -53,6 +55,7 @@ class CoreDataManager: ObservableObject {
             squats.isTime = false
             squats.completedApproach = 0
             squats.requirementReps = 12
+            squats.givenExp = 4
             
             save()
         } catch {
@@ -98,6 +101,20 @@ class CoreDataManager: ObservableObject {
             }
         } catch {
             print("DataBase create workout error: \(error)")
+        }
+    }
+    
+    func addExperience(reps: Int, givenExp: Int16) {
+        let request: NSFetchRequest<User> = User.fetchRequest()
+        
+        do {
+            let users = try context.fetch(request)
+            if let user = users.first {
+                user.xp += Int64(reps) * Int64(givenExp)
+                self.save()
+            }
+        } catch {
+            print("DataBase add exp error: \(error)")
         }
     }
     

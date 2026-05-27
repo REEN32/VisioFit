@@ -66,7 +66,7 @@ struct AccoutContentView: View {
                                 }
                             }
                             NavigationLink {
-                                LevelView()
+                                LevelView(user: user)
                             } label: {
                                 VStack(spacing: 4) {
                                     HStack {

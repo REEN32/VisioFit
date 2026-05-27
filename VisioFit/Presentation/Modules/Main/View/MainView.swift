@@ -82,7 +82,7 @@ struct MainContentView: View {
                                     .orangeText(fontSize: 46)
                                 Text("ккал из \(user.kkalGoal)")
                                     .accentDescription()
-                                DefaultProgressBar(actualValue: mainViewModel.calculatePercentCallories(actualCal: healthViewModel.calories, for: user), maxValue: Double(user.kkalGoal))
+                                DefaultProgressBar(actualValue: healthViewModel.calories, maxValue: Double(user.kkalGoal))
                                     .frame(maxWidth: .infinity, minHeight: 10, maxHeight: 10)
                                     .padding(.vertical, 5)
                                 Text("\(mainViewModel.calculatePercentCallories(actualCal: healthViewModel.calories, for: user).formatted())% цели")

@@ -22,7 +22,7 @@ struct TrainingCompleteView: View {
             GeometryReader { proxy in
                 VStack(spacing: 0) {
                     VStack(spacing: 0) {
-                        Text("+180 XP получено")
+                        Text("+\(Int(workoutSet.givenExp) * trainingViewModel.totalReps) XP получено")
                             .padding(.vertical, 8)
                             .padding(.horizontal, 15)
                             .headText(fontSize: 18)
@@ -180,6 +180,7 @@ struct TrainingCompleteView: View {
                     
                     user.addToWorkout(workout)
                 }
+                coreDataManager.addExperience(reps: trainingViewModel.totalReps, givenExp: workoutSet.givenExp)
             }
         }
         .onDisappear {
