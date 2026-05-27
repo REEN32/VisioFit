@@ -86,7 +86,7 @@ struct TrainingContentView: View {
                                            image: workoutSet.image ?? "square.fill",
                                            desctiptionCount: Double(workoutSet.approach),
                                            isTime: workoutSet.isTime,
-                                           percent: requestViewModel.calculatePercent(for: workoutSet, in: self.workouts))
+                                           percent: requestViewModel.calculatePercent(for: workoutSet, in: self.workouts).rounded())
                                 {
                                     self.trainingType = workoutSet.trainingType
                                     self.selectedWorkoutSet = workoutSet
