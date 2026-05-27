@@ -11,37 +11,30 @@ struct ParametrRow: View {
         Button {
             action()
         } label: {
-            HStack {
-                HStack {
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 20) {
-                            DefaultIcon(iconName: iconName, maxWidth: 40, maxHeight: 40)
-                            VStack(alignment: .leading) {
-                                Text(name)
-                                    .headText(fontSize: 20, weight: .bold)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    Spacer()
+            HStack(spacing: 0) {
+                HStack(spacing: 20) {
+                    DefaultIcon(iconName: iconName, maxWidth: 40, maxHeight: 40)
+                    
+                    Text(name)
+                        .headText(fontSize: 20, weight: .bold)
+                        .lineLimit(1)
+                        .layoutPriority(1)
                 }
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                HStack {
-                    Spacer()
-                    VStack {
-                        HStack {
-                            Text(value + " " + valueType)
-                                .accentDescription(fontSize: 14)
-                            Image(systemName: "chevron.right")
-                                .accentDescription(fontSize: 14)
-                        }
-                    }
-                    .padding(.horizontal, 20)
+                .padding(.leading, 20)
+                Spacer()
+                HStack(spacing: 8) {
+                    Text(valueType.isEmpty ? value : "\(value) \(valueType)")
+                        .accentDescription(fontSize: 14)
+                        .lineLimit(1)
+                    
+                    Image(systemName: "chevron.right")
+                        .accentDescription(fontSize: 14)
                 }
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
+                .padding(.trailing, 20)
+                
             }
+            .padding(.vertical, 15)
+            .frame(maxWidth: .infinity)
             .mainBlock()
         }
     }

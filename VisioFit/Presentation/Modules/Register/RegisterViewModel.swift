@@ -10,6 +10,7 @@ class RegisterViewModel: ObservableObject {
     
     @Published var height: String = ""
     @Published var weight: String = ""
+    @Published var calories: String = ""
     
     private let coreData = CoreDataManager.shared
     
@@ -24,6 +25,7 @@ class RegisterViewModel: ObservableObject {
             user.xp = 125
             user.streak = 0
             user.maxStreak = 0
+            user.kkalGoal = Int16(self.calories) ?? 0
         }
     }
 }

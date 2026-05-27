@@ -35,26 +35,26 @@ class HealthViewModel: ObservableObject {
     func loadLast7DaysData() {
         hkManager.fetchLast7DaysDailySum(for: .stepCount, unit: HKUnit.count()) { [weak self] rawData in
             guard let self = self else { return }
-            self.stepsHistory = self.convertAndSort(rawData: rawData, multiplier: 1.0)
+            self.stepsHistory = self.convertAndSort(rawData: rawData, multiplier: 1.0, fraction: 0)
         }
         
         hkManager.fetchLast7DaysDailySum(for: .distanceWalkingRunning, unit: HKUnit.meter()) { [weak self] rawData in
             guard let self = self else { return }
-            self.distanceHistory = self.convertAndSort(rawData: rawData, multiplier: 1.0 / 1000.0)
+            self.distanceHistory = self.convertAndSort(rawData: rawData, multiplier: 1.0 / 1000.0, fraction: 2)
         }
         
         hkManager.fetchLast7DaysDailySum(for: .activeEnergyBurned, unit: HKUnit.kilocalorie()) { [weak self] rawData in
             guard let self = self else { return }
-            self.caloriesHistory = self.convertAndSort(rawData: rawData, multiplier: 1.0)
+            self.caloriesHistory = self.convertAndSort(rawData: rawData, multiplier: 1.0, fraction: 0)
         }
     }
     
-    private func convertAndSort(rawData: [Date: Double], multiplier: Double) -> [Double] {
+    private func convertAndSort(rawData: [Date: Double], multiplier: Double, fraction: Double) -> [Double] {
         let sortedKeys = rawData.keys.sorted(by: <)
         
         return sortedKeys.map { date in
             let value = (rawData[date] ?? 0.0) * multiplier
-            return (value * 100).rounded() / 100
+            return (value * pow(10, fraction)).rounded() / pow(10, fraction)
         }
     }
 }

@@ -4,11 +4,9 @@ import CoreData
 struct AccoutView: View {
     @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
     
-    private let accountViewModel: AccountViewModel = AccountViewModel()
-    
     var body: some View {
         if let user = users.first {
-            AccoutContentView(user: user, accountViewModel: accountViewModel)
+            AccoutContentView(user: user)
         } else {
             VStack {
                 Text("Ошибка загрузки")
@@ -31,8 +29,14 @@ struct AccoutContentView: View {
     @Environment(\.managedObjectContext) private var context
     
     @State private var activeParam: ActiveParam?
+    @State private var toSettings: Bool = false
     
     @StateObject var accountViewModel: AccountViewModel
+    
+    init(user: User) {
+        self.user = user
+        self._accountViewModel = StateObject(wrappedValue: AccountViewModel(user: user))
+    }
     
     var body: some View {
         NavigationStack {
@@ -167,6 +171,10 @@ struct AccoutContentView: View {
                                 activeParam = .gender
                             }
                                 .frame(minHeight: 60)
+                            ParametrRow(iconName: "gearshape.fill", name: "Больше", value: "", valueType: "") {
+                                self.toSettings = true
+                            }
+                                .frame(minHeight: 60)
                             
                         }
                         .padding(15)
@@ -179,6 +187,9 @@ struct AccoutContentView: View {
                             case .gender:
                                 SexView(user: user)
                             }
+                        }
+                        .navigationDestination(isPresented: $toSettings) {
+                            SettingsView(user: user)
                         }
                         
                         VStack(alignment: .leading, spacing: 15) {
@@ -220,7 +231,8 @@ struct AccoutContentView: View {
             }
         }
         .onAppear {
-            accountViewModel.calculateAverageAccuracy(from: user.workout ?? [])
+            accountViewModel.calculateAverageAccuracy()
+            accountViewModel.currentStreak()
         }
     }
 }

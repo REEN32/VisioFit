@@ -154,26 +154,7 @@ struct TrainingCompleteView: View {
         }
         .onAppear {
             DispatchQueue.global(qos: .default).async {
-//                coreDataManager.addEntity(Workout.self) { workout in
-//                    let metric = MetricPoint(context: context)
-//                    metric.quality = Double(trainingViewModel.averageAccuracy)
-//                    
-//                    let exerciseSet = ExerciseSet(context: context)
-//                    exerciseSet.approach = workoutSet.completedApproach
-//                    // Дописать
-//                    exerciseSet.name = workoutSet.name
-//                    exerciseSet.count = Int16(trainingViewModel.totalReps)
-//                    exerciseSet.metricPoint = metric
-//                    
-//                    workout.id = UUID()
-//                    workout.date = Date()
-//                    workout.duration = Int64(trainingViewModel.trainingTime)
-//                    workout.totalCalories = 100 // Заменить на подсчёт каллорий
-//                    workout.exerciseSet = exerciseSet
-//                }
                 coreDataManager.addWorkout { user in
-                    // Проверить сохраняет ли прям в тренировку user
-                    // Протестить работоспособность (скорее всего не работает в TrainingView)
                     let metric = MetricPoint(context: context)
                     if trainingViewModel.averageAccuracy != nil {
                         metric.quality = Double(trainingViewModel.averageAccuracy!)
@@ -183,7 +164,9 @@ struct TrainingCompleteView: View {
 
                     let exerciseSet = ExerciseSet(context: context)
                     exerciseSet.approach = workoutSet.completedApproach
-                    // Дописать
+                    exerciseSet.bad = Int16(trainingViewModel.badReps)
+                    exerciseSet.good = Int16(trainingViewModel.goodReps)
+                    exerciseSet.perfect = Int16(trainingViewModel.perfectReps)
                     exerciseSet.name = workoutSet.name
                     exerciseSet.count = Int16(trainingViewModel.totalReps)
                     exerciseSet.metricPoint = metric

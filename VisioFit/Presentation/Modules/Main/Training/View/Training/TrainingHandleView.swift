@@ -34,8 +34,7 @@ struct TrainingHandleView: View {
                             Text("повторений")
                                 .headText(fontSize: 22, weight: .medium)
                         }
-                        RepeatCountLines(count: trainingViewModel.reps, target: 12)
-                        // тут ещё сделать target на динамичекий !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        RepeatCountLines(count: trainingViewModel.reps, target: Int(workoutSet.requirementReps))
                     }
                     .padding(.horizontal, 15)
                     .padding(.bottom, 20)
