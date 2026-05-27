@@ -124,7 +124,7 @@ struct AccoutContentView: View {
                                     VStack {
                                         Image(systemName: "flame.fill")
                                             .font(.system(size: 36, weight: .heavy))
-                                            .foregroundStyle(Color.accentOrange)
+                                            .foregroundStyle(accountViewModel.isStreakActiveToday ? Color.accentOrange : Color.accentDescription)
                                     }
                                     .frame(maxWidth: 70, maxHeight: 70)
                                     .background(
