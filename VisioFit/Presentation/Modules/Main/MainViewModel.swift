@@ -52,7 +52,13 @@ class MainViewModel: ObservableObject {
     
     private func recalculateCharts(for chartType: ChartType, workouts: Set<Workout>) {
         switch chartType {
-        case .kkal: self.chartData = self.calories
+        case .kkal:
+            self.chartData = self.calories
+            if var last = self.chartData.last {
+                last += self.calculateTodayCalories()
+                chartData.removeLast()
+                chartData.append(last)
+            }
         case .range: self.chartData = self.distance
         case .steps: self.chartData = self.steps
         case .time: self.chartData = self.setTimeChart(workouts: workouts)
