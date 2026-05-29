@@ -6,4 +6,5 @@ struct BodyPoseData {
     let wrists: [CGPoint]?
     let knees: [CGPoint]?
     let root: CGPoint?
+    let ankles: [CGPoint]?
 }

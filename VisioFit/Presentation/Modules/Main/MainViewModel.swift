@@ -25,7 +25,6 @@ class MainViewModel: ObservableObject {
     
     var todayWorkoutsDuration: Double {
         let calendar = Calendar.current
-        let now = Date()
         
         let todayWorkouts = rawWorkouts.filter { workout in
             guard let workoutDate = workout.date else { return false }
@@ -111,5 +110,22 @@ class MainViewModel: ObservableObject {
     
     func calculatePercentCallories(actualCal cal: Double, for user: User) -> Double {
         return min(((cal / Double(user.kkalGoal))) * 100, 100)
+    }
+    
+    func calculateTodayCalories() -> Double {
+        let todayWorkouts = filterToday(self.rawWorkouts)
+        let calories = todayWorkouts.reduce(0) { partialResult, workout in
+            partialResult + Double(workout.totalCalories)
+        }
+        return calories
+    }
+    
+    private func filterToday(_ workouts: Set<Workout>) -> Set<Workout> {
+        let calendar = Calendar.current
+            
+        return workouts.filter { workout in
+            guard let workoutDate = workout.date else { return false }
+            return calendar.isDateInToday(workoutDate)
+        }
     }
 }

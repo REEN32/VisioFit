@@ -2,15 +2,18 @@ import SwiftUI
 
 struct TrainingView: View {
     @FetchRequest(sortDescriptors: []) private var workoutSets: FetchedResults<WorkoutSet>
-    
     @FetchRequest(sortDescriptors: [], predicate: RequestViewModel.todayPredicate())
     private var todayWorkouts: FetchedResults<Workout>
+    @FetchRequest(sortDescriptors: []) private var users: FetchedResults<User>
     
     private let requestViewModel: RequestViewModel = RequestViewModel()
     
     var body: some View {
-        if !workoutSets.isEmpty {
-            TrainingContentView(workoutSets: workoutSets, workouts: todayWorkouts, requestViewModel: requestViewModel)
+        if !workoutSets.isEmpty, let user = users.first {
+            TrainingContentView(workoutSets: workoutSets,
+                                workouts: todayWorkouts,
+                                requestViewModel: requestViewModel,
+                                user: user)
         } else {
             VStack {
                 Text("Ошибка загрузки")
@@ -32,11 +35,15 @@ struct TrainingContentView: View {
     private var workouts: FetchedResults<Workout>
     
     private let requestViewModel: RequestViewModel
+    private let userWeight: Double
+    private let user: User
     
-    init(workoutSets: FetchedResults<WorkoutSet>, workouts: FetchedResults<Workout>, requestViewModel: RequestViewModel) {
+    init(workoutSets: FetchedResults<WorkoutSet>, workouts: FetchedResults<Workout>, requestViewModel: RequestViewModel, user: User) {
         self.workoutSets = workoutSets
         self.workouts = workouts
         self.requestViewModel = requestViewModel
+        self.userWeight = user.weight
+        self.user = user
     }
     
     var body: some View {
@@ -64,7 +71,7 @@ struct TrainingContentView: View {
                             Spacer()
                             VStack(spacing: 0) {
                                 Spacer()
-                                CircleProgrssBar(value: 52, maxValue: 100, lineWidth: 10, fontSize: 24, maxWidth: 90, maxHeight: 90)
+                                CircleProgrssBar(value: requestViewModel.calculateBurnedCalories(Set(workouts)), maxValue: Double(user.kkalGoal), lineWidth: 10, fontSize: 24, maxWidth: 90, maxHeight: 90)
                             }
                             .frame(minHeight: 100)
                         }
@@ -118,7 +125,7 @@ struct TrainingContentView: View {
             }
         }
         .fullScreenCover(isPresented: $changeScreen) {
-            TrainingRouter(trainingType: trainingType, workoutSet: selectedWorkoutSet!, isCV: isCV) {
+            TrainingRouter(trainingType: trainingType, workoutSet: selectedWorkoutSet!, isCV: isCV, userWeight: userWeight) {
                 changeScreen = false
             }
         }

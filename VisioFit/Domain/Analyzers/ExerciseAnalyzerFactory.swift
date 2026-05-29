@@ -1,12 +1,12 @@
 class ExerciseAnalyzerFactory {
-    static func create(trainingType: TrainingType) -> ExerciseAnalyzer {
+    static func create(trainingType: TrainingType, userWeight: Double) -> ExerciseAnalyzer {
         switch trainingType {
         case .pushup:
-            return PushUpAnalyzer()
+            return PushUpAnalyzer(userWeight: userWeight)
         case .squat:
-            fatalError()
+            return SquatAnalyzer(userWeight: userWeight)
         case .plank:
-            return PlankAnalyzer()
+            return PlankAnalyzer(userWeight: userWeight)
         }
     }
 }

@@ -8,6 +8,7 @@ class TrainingViewModel: ObservableObject {
     var badReps: Int = 0
     var goodReps: Int = 0
     var perfectReps: Int = 0
+    var burnedCalories: Double = 0
     @Published var currentAccuracy: Int?
     @Published var accuracyArray: [Double] = []
     @Published var trainingTime: TimeInterval = 0
@@ -29,6 +30,10 @@ class TrainingViewModel: ObservableObject {
         let minutes = Int(restTime) / 60
         let seconds = Int(restTime) % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    var burnedCaloriesView: Double {
+        (self.burnedCalories * 100).rounded() / 100
     }
     
     var averageAccuracy: Int? {
@@ -67,6 +72,12 @@ class TrainingViewModel: ObservableObject {
         cameraVM.$perfectCount
             .sink { [weak self] perfectCount in
                 self?.perfectReps = perfectCount
+            }
+            .store(in: &cancellables)
+        
+        cameraVM.$burnedCallories
+            .sink { [weak self] burnedCalories in
+                self?.burnedCalories = burnedCalories
             }
             .store(in: &cancellables)
     }

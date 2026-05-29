@@ -55,14 +55,14 @@ struct TrainingCompleteView: View {
                                         .accentDescription(fontSize: 14)
                                 }
                                 VStack {
-                                    if trainingViewModel.perfectReps != 0 {
-                                        Text("\(trainingViewModel.perfectReps)")
+                                    if trainingViewModel.burnedCalories != 0 {
+                                        Text("\((trainingViewModel.burnedCaloriesView).formatted())")
                                             .statisticsText(isPositive: true, fontSize: 26)
                                     } else {
                                         Text("–")
                                             .statisticsText(isPositive: true, fontSize: 26)
                                     }
-                                    Text("идеальных")
+                                    Text("ккал")
                                         .accentDescription(fontSize: 14)
                                 }
                                 VStack {
@@ -175,7 +175,7 @@ struct TrainingCompleteView: View {
                     workout.id = UUID()
                     workout.date = Date()
                     workout.duration = Int64(trainingViewModel.trainingTime)
-                    workout.totalCalories = 100 // Заменить на подсчёт каллорий
+                    workout.totalCalories = Int16(trainingViewModel.burnedCalories)
                     workout.exerciseSet = exerciseSet
                     
                     user.addToWorkout(workout)

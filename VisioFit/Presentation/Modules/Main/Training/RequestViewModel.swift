@@ -27,4 +27,11 @@ class RequestViewModel {
         
         return NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
     }
+    
+    func calculateBurnedCalories(_ workouts: Set<Workout>) -> Double {
+        let calories = workouts.reduce(0) { partialResult, workout in
+            partialResult + Double(workout.totalCalories)
+        }
+        return calories
+    }
 }

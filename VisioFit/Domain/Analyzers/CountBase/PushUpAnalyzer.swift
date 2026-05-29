@@ -6,11 +6,18 @@ class PushUpAnalyzer: ExerciseAnalyzer {
     private(set) var badCount: Int = 0
     private(set) var goodCount: Int = 0
     private(set) var perfectCount: Int = 0
+    private(set) var burnedCalories: Double = 0
+    
+    private let userWeight: Double
     
     private let timeStap = 0.05
     private var accuracyArray: [Int] = []
     private var lastAngle: (left: CGFloat, right: CGFloat) = (180, 180)
     private var isPushUp: Bool = true
+    
+    init(userWeight: Double = 70.0) {
+        self.userWeight = userWeight
+    }
     
     func analyze(pose: BodyPoseData) {
         guard let sholders = pose.shoulders else { return }
@@ -41,6 +48,14 @@ class PushUpAnalyzer: ExerciseAnalyzer {
         if (Double(self.lastAngle.left + self.lastAngle.right) / 2) < 100 && isPushUp {
             self.isPushUp = false
             self.count += 1
+            
+            let met = 8.0
+            let caloriesPerMinute = (met * 3.5 * userWeight) / 200.0
+            let caloriesPerSecond = caloriesPerMinute / 60.0
+            let caloriesForOneRep = caloriesPerSecond * 2.0
+            let accuracyModifier = Double(self.accuracy ?? 100) / 100.0
+            self.burnedCalories += caloriesForOneRep * accuracyModifier
+            
             guard let accuracy = self.accuracy else { return }
             switch accuracy {
             case 0...60:
@@ -95,6 +110,7 @@ class PushUpAnalyzer: ExerciseAnalyzer {
 
     func reset() {
         self.count = 0
+        self.burnedCalories = 0
         self.accuracy = nil
     }
 }

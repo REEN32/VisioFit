@@ -11,11 +11,11 @@ struct TrainingRouter: View {
     private let workoutSet: WorkoutSet
     private let isCV: Bool
     
-    init(trainingType: TrainingType, workoutSet: WorkoutSet, isCV: Bool, onFinish: @escaping () -> Void) {
+    init(trainingType: TrainingType, workoutSet: WorkoutSet, isCV: Bool, userWeight: Double, onFinish: @escaping () -> Void) {
         self.onFinish = onFinish
         self.trainingType = trainingType
         
-        let cameraVM: CameraViewModel = CameraViewModel(analyzer: ExerciseAnalyzerFactory.create(trainingType: trainingType))
+        let cameraVM: CameraViewModel = CameraViewModel(analyzer: ExerciseAnalyzerFactory.create(trainingType: trainingType, userWeight: userWeight))
         self._cameraViewModel = StateObject(wrappedValue: cameraVM)
         
         let trainingVM = TrainingViewModel(cameraVM: cameraVM)

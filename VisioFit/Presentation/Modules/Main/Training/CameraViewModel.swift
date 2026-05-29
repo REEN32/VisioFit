@@ -11,6 +11,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     @Published var badCount: Int = 0
     @Published var goodCount: Int = 0
     @Published var perfectCount: Int = 0
+    @Published var burnedCallories: Double = 0
     
     
     private let request = VNDetectHumanBodyPoseRequest()
@@ -104,6 +105,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             var elbows: [CGPoint] = []
             var wrists: [CGPoint] = []
             var knees: [CGPoint] = []
+            var ankles: [CGPoint] = []
             var rootLoc: CGPoint?
             for observation in observations {
                 let leftShoulder = try observation.recognizedPoint(.leftShoulder)
@@ -128,6 +130,11 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 
                 let root = try observation.recognizedPoint(.root)
                 rootLoc = root.location
+                
+                let leftAnkle = try observation.recognizedPoint(.leftAnkle)
+                ankles.append(leftAnkle.location)
+                let rightAnkle = try observation.recognizedPoint(.rightAnkle)
+                ankles.append(rightAnkle.location)
             }
             
             
@@ -143,7 +150,8 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                                             elbows: elbows,
                                             wrists: wrists,
                                             knees: knees,
-                                            root: rootLoc)
+                                            root: rootLoc,
+                                            ankles: ankles)
                     
                     self.currentAnalyzer.analyze(pose: pose)
                     self.count = self.currentAnalyzer.count
@@ -151,6 +159,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                     self.badCount = self.currentAnalyzer.badCount
                     self.goodCount = self.currentAnalyzer.goodCount
                     self.perfectCount = self.currentAnalyzer.perfectCount
+                    self.burnedCallories = self.currentAnalyzer.burnedCalories
                     
                     self.lastTimeStap = Date()
                 }
